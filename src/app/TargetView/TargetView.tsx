@@ -60,7 +60,7 @@ export const TargetView: React.FunctionComponent<TargetViewProps> = (props) => {
 
   return (<>
     <BreadcrumbPage pageTitle={props.pageTitle} breadcrumbs={props.breadcrumbs}>
-      <TargetSelect isCompact={props.compactSelect == null ? true : props.compactSelect} />
+      <TargetSelect isCompact={props.compactSelect == null ? false : props.compactSelect} />
       { connected ? props.children : <NoTargetSelected /> }
     </BreadcrumbPage>
   </>);

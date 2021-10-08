@@ -191,7 +191,7 @@ export const TargetSelect: React.FunctionComponent<TargetSelectProps> = (props) 
 
   return (<>
       <Grid>
-        <GridItem span={props.isCompact ? 4 : 8}>
+        <GridItem lg={props.isCompact ? 4 : 8} sm={12}>
           <Card>
             <CardHeader>
               <CardHeaderMain>
