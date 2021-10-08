@@ -46,3 +46,7 @@ html, body, #root {
 .cryostat-logo {
   height: 2em;
 }
+
+thead.event-templates-table-header  {
+  --pf-c-table--cell--Overflow: visible;
+}

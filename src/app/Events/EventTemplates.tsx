@@ -263,7 +263,7 @@ export const EventTemplates = () => {
         sortBy={sortBy}
         onSort={handleSort}
       >
-        <TableHeader />
+        <TableHeader className="event-templates-table-header" />
         <TableBody />
       </Table>
 
