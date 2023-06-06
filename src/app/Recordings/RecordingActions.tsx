@@ -102,6 +102,10 @@ export const RecordingActions: React.FC<RecordingActionsProps> = (props) => {
     context.api.downloadReport(props.recording);
   }, [context.api, props.recording]);
 
+  const handleViewJmc = React.useCallback(() => {
+    context.api.sendRecordingToJmc(props.recording);
+  }, [context.api, props.recording])
+
   const actionItems = React.useMemo(() => {
     const actionItems = [
       {
@@ -114,6 +118,11 @@ export const RecordingActions: React.FC<RecordingActionsProps> = (props) => {
         key: 'view-report',
         onClick: handleViewReport,
       },
+      {
+        title: 'View in JDK Mission Control',
+        key: 'view-jmc',
+        onClick: handleViewJmc,
+      },
     ] as RowAction[];
     if (grafanaEnabled) {
       actionItems.push({
@@ -123,7 +132,7 @@ export const RecordingActions: React.FC<RecordingActionsProps> = (props) => {
       });
     }
     return actionItems;
-  }, [handleDownloadRecording, handleViewReport, grafanaEnabled, grafanaUpload]);
+  }, [handleDownloadRecording, handleViewReport, handleViewJmc, grafanaEnabled, grafanaUpload]);
 
   const onSelect = React.useCallback(
     (action: RowAction) => {

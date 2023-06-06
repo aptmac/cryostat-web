@@ -829,6 +829,14 @@ export class ApiService {
       });
   }
 
+  sendRecordingToJmc(recording: Recording): void {
+    const connection = new WebSocket("ws://localhost:8029/cryostat/");
+    connection.onopen = () => {
+      connection.send(recording.downloadUrl);
+      connection.close();
+    }
+  }
+
   downloadTemplate(template: EventTemplate): void {
     this.target
       .target()
