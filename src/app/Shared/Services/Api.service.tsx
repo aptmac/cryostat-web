@@ -830,11 +830,27 @@ export class ApiService {
   }
 
   sendRecordingToJmc(recording: Recording): void {
-    const connection = new WebSocket("ws://localhost:8029/cryostat/");
-    connection.onopen = () => {
-      connection.send(recording.downloadUrl);
-      connection.close();
+    const body = new window.FormData();
+    if (isActiveRecording(recording)) {
+      body.append('resource', recording.downloadUrl.replace('/api/v1', '/api/v2.1'));
+    } else {
+      body.append('resource', recording.downloadUrl.concat('/jwt'));
     }
+    this.sendRequest('v2.1', 'auth/token', {
+      method: 'POST',
+      body,
+    })      
+    .pipe(
+      concatMap((resp) => resp.json()),
+      map((response: AssetJwtResponse) => response.data.result.resourceUrl)
+    )
+    .subscribe((resourceUrl) => {
+      const connection = new WebSocket("ws://localhost:8029/cryostat/");
+      connection.onopen = () => {
+        connection.send(resourceUrl);
+        connection.close();
+      }
+    });
   }
 
   downloadTemplate(template: EventTemplate): void {
