@@ -5,6 +5,17 @@
   "repository": "https://github.com/cryostatio/cryostat-web.git",
   "license": "Apache-2.0",
   "private": true,
+  "consolePlugin": {
+    "name": "cryostat-plugin",
+    "version": "0.0.1",
+    "displayName": "OpenShift Console Plugin Template",
+    "description": "Template project for OpenShift Console plugins. Edit package.json to change this message and the plugin name.",
+    "exposedModules": {
+    },
+    "dependencies": {
+      "@console/pluginAPI": "*"
+    }
+  },
   "scripts": {
     "build": "concurrently -c 'auto' 'yarn:build:notests' 'yarn:test'",
     "build:notests": "webpack --config webpack.prod.js",
@@ -33,9 +44,14 @@
     "build:bundle-analyze": "webpack-bundle-analyzer ./stats.json dist",
     "build:bundle-profile-analyze": "concurrently -c 'auto' 'yarn:build:bundle-*'",
     "yarn:frzinstall": "yarn install --immutable",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "start-console": "./start-console.sh",
+    "start-plugin": "yarn webpack serve --progress",
+    "webpack": "node --loader ts-node/esm ./node_modules/.bin/webpack --config webpack.config.ts"
   },
   "devDependencies": {
+    "@openshift-console/dynamic-plugin-sdk": "1.2.0",
+    "@openshift-console/dynamic-plugin-sdk-webpack": "1.1.0",
     "@testing-library/dom": "^9.3.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.5",
