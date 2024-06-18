@@ -1,39 +1,64 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDir": ".",
-    "outDir": "dist",
     "module": "esnext",
-    "target": "es5",
-    "lib": ["es6", "dom"],
-    "sourceMap": true,
-    "jsx": "react-jsx",
     "moduleResolution": "node",
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noImplicitAny": false,
+    "target": "es2020",
+    "sourceMap": true,
+    "jsx": "react",
     "allowJs": true,
-    "esModuleInterop": true,
+    "strict": false,
+    "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
-    "strictFunctionTypes": false,
-    "strict": true,
-    "resolveJsonModule": true,
-    "importHelpers": true,
-    "paths": {
-      "@app/*": ["src/app/*"],
-      "@test/*": ["src/test/*"],
-      "@i18n/*": ["src/i18n/*"],
-      "@assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"]
-    },
-    "skipLibCheck": true
+    "esModuleInterop": true,
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.jsx",
-    "src/**/*.js",
-    "src/**/*.json"
-  ],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "files": true,
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  }
 }
+
+// {
+//   "compilerOptions": {
+//     "baseUrl": ".",
+//     "rootDir": ".",
+//     "outDir": "dist",
+//     "module": "esnext",
+//     "target": "es5",
+//     "lib": ["es6", "dom"],
+//     "sourceMap": true,
+//     "jsx": "react-jsx",
+//     "moduleResolution": "node",
+//     "forceConsistentCasingInFileNames": true,
+//     "noImplicitReturns": true,
+//     "noImplicitThis": true,
+//     "noImplicitAny": false,
+//     "allowJs": true,
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true,
+//     "strictFunctionTypes": false,
+//     "strict": true,
+//     "resolveJsonModule": true,
+//     "importHelpers": true,
+//     "paths": {
+//       "@app/*": ["src/app/*"],
+//       "@test/*": ["src/test/*"],
+//       "@i18n/*": ["src/i18n/*"],
+//       "@assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"]
+//     },
+//     "skipLibCheck": true
+//   },
+//   "include": [
+//     "src/**/*.ts",
+//     "src/**/*.tsx",
+//     "src/**/*.jsx",
+//     "src/**/*.js",
+//     "src/**/*.json"
+//   ],
+//   "exclude": ["node_modules", "dist"]
+// }

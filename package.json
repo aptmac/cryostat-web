@@ -11,6 +11,7 @@
     "displayName": "OpenShift Console Plugin Template",
     "description": "Template project for OpenShift Console plugins. Edit package.json to change this message and the plugin name.",
     "exposedModules": {
+      "PocPage": "./app/ErrorView/ErrorView"
     },
     "dependencies": {
       "@console/pluginAPI": "*"
@@ -47,7 +48,7 @@
     "type-check": "tsc --noEmit",
     "start-console": "./start-console.sh",
     "start-plugin": "yarn webpack serve --progress",
-    "webpack": "node --loader ts-node/esm ./node_modules/.bin/webpack --config webpack.config.ts"
+    "webpack": "node -r ts-node/register ./node_modules/.bin/webpack"
   },
   "devDependencies": {
     "@openshift-console/dynamic-plugin-sdk": "1.2.0",
@@ -93,12 +94,13 @@
     "terser-webpack-plugin": "^5.3.9",
     "ts-jest": "^27.0.5",
     "ts-loader": "^9.4.2",
+    "ts-node": "^10.8.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "tslib": "^2.6.2",
     "typescript": "^4.9.5",
     "url-loader": "^4.1.1",
     "wait-on": "^7.0.1",
-    "webpack": "^5.76.2",
+    "webpack": "5.75.0",
     "webpack-bundle-analyzer": "^4.8.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
@@ -125,10 +127,10 @@
     "nanoid": "^3.3.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-i18next": "^12.3.1",
+    "react-i18next": "11.7.3",
     "react-joyride": "^2.7.1",
-    "react-redux": "^8.0.5",
-    "react-router-dom": "^6.17.0",
+    "react-redux": "7.2.2",
+    "react-router-dom": "5.3.x",
     "rxjs": "^7.8.0",
     "semver": "^7.5.4",
     "showdown": "^2.1.0"
