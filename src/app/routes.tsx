@@ -15,7 +15,6 @@
  */
 
 import * as React from 'react';
-import { useLocation, Route, Routes } from 'react-router-dom';
 import About from './About/About';
 import Archives from './Archives/Archives';
 import CreateRecording from './CreateRecording/CreateRecording';
@@ -36,6 +35,7 @@ import Topology from './Topology/Topology';
 import { useDocumentTitle } from './utils/hooks/useDocumentTitle';
 import { useFeatureLevel } from './utils/hooks/useFeatureLevel';
 import { accessibleRouteChangeHandler } from './utils/utils';
+import { CompatRoute, Routes, useLocation } from 'react-router-dom-v5-compat';
 
 let routeFocusTimer: number;
 const OVERVIEW = 'Overview';
@@ -229,9 +229,9 @@ const AppRoutes: React.FC<AppRoutesProps> = (_) => {
               <Component />
             </WithTitleUpdates>
           );
-          return <Route key={path} path={path} element={content} />;
+          return <CompatRoute key={path} path={path} element={content} />;
         })
-        .concat([<Route key={'not-found'} path={'*'} element={<PageNotFound />} />])}
+        .concat([<CompatRoute key={'not-found'} path={'*'} element={<PageNotFound />} />])}
     </Routes>
   );
 };

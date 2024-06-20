@@ -22,7 +22,7 @@ import { getFromLocalStorage, removeFromLocalStorage, saveToLocalStorage } from 
 import { getAnnotation } from '@app/utils/utils';
 import { Button, Divider, Select, SelectGroup, SelectOption, SelectVariant } from '@patternfly/react-core';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom-v5-compat";
 
 export interface TargetContextSelectorProps {
   className?: string;

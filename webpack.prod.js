@@ -61,7 +61,12 @@ module.exports = merge(common('production'), {
           path.resolve(__dirname, 'node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'),
           path.resolve(__dirname, 'node_modules/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css'),
           path.resolve(__dirname, 'node_modules/@patternfly/quickstarts/dist/quickstarts.css'),
-          path.resolve(__dirname, 'node_modules/@patternfly/react-topology/node_modules/@patternfly/react-styles/css')
+          path.resolve(__dirname, 'node_modules/@patternfly/react-topology/node_modules/@patternfly/react-styles/css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-topology/dist/esm/css/topology-components.css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-topology/dist/esm/css/topology-view.css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-topology/dist/esm/css/topology-controlbar.css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-topology/dist/esm/css/topology-pipelines.css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-topology/dist/esm/css/topology-side-bar.css')
         ],
         use: [MiniCssExtractPlugin.loader, 'css-loader']
       }

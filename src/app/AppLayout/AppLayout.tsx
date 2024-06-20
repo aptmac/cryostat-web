@@ -80,7 +80,8 @@ import {
 import _ from 'lodash';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, matchPath, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { matchPath } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom-v5-compat";
 import { map } from 'rxjs/operators';
 
 export interface AppLayoutProps {

@@ -24,7 +24,7 @@ export interface ErrorViewProps {
   retry?: () => void;
 }
 
-const ErrorView: React.FC<ErrorViewProps> = ({ title, message, retryButtonMessage = 'Retry', retry }) => {
+export const ErrorView: React.FC<ErrorViewProps> = ({ title, message, retryButtonMessage = 'Retry', retry }) => {
   return (
     <>
       <EmptyState>
