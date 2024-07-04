@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { DeleteOrDisableWarningType } from '../../Modal/types';
-import { ThemeSetting } from '../../Settings/types';
-import { getFromLocalStorage, saveToLocalStorage } from '../../utils/LocalStorage';
-import { DatetimeFormat, defaultDatetimeFormat } from '../../../i18n/datetime';
+import { DeleteOrDisableWarningType } from '@app/Modal/types';
+import { ThemeSetting } from '@app/Settings/types';
+import { getFromLocalStorage, saveToLocalStorage } from '@app/utils/LocalStorage';
+import { DatetimeFormat, defaultDatetimeFormat } from '@i18n/datetime';
 import { BehaviorSubject, fromEvent, Observable, startWith } from 'rxjs';
 import { NotificationCategory } from './api.types';
 import {

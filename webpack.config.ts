@@ -1,19 +1,15 @@
 /* eslint-env node */
 
-import * as path from 'path';
-import { Configuration as WebpackConfiguration } from 'webpack';
-import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
-import { ConsoleRemotePlugin } from '@openshift-console/dynamic-plugin-sdk-webpack';
-
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
+const WebpackConfiguration = require('webpack');
+const WebpackDevServerConfiguration = require('webpack-dev-server');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const { ConsoleRemotePlugin } = require('@openshift-console/dynamic-plugin-sdk-webpack');
+const { EnvironmentPlugin } = require('webpack');
 
 const isProd = process.env.NODE_ENV === 'production';
 
-interface Configuration extends WebpackConfiguration {
-  devServer?: WebpackDevServerConfiguration;
-}
-
-const config: Configuration = {
+module.exports = {
   mode: isProd ? 'production' : 'development',
   // No regular entry points needed. All plugin related scripts are generated via ConsoleRemotePlugin.
   entry: {},
@@ -25,6 +21,13 @@ const config: Configuration = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: path.resolve(__dirname, './tsconfig.json')
+      })
+    ],
+    symlinks: false,
+    cacheWithContext: false
   },
   module: {
     rules: [
@@ -42,8 +45,21 @@ const config: Configuration = {
         ],
       },
       {
-        test: /\.(css)$/,
-        use: ['style-loader', 'css-loader'],
+        test: /\.css$/,
+        include: [
+          path.resolve(__dirname, 'src'),
+          path.resolve(__dirname, 'node_modules/patternfly'),
+          path.resolve(__dirname, 'node_modules/@patternfly/patternfly'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-styles/css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-core/dist/styles/base.css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-core/dist/esm/@patternfly/patternfly'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-core/node_modules/@patternfly/react-styles/css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/quickstarts/dist/quickstarts.css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-topology/node_modules/@patternfly/react-styles/css')
+        ],
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff2?|ttf|eot|otf)(\?.*$|$)/,
@@ -76,9 +92,10 @@ const config: Configuration = {
   },
   plugins: [
     new ConsoleRemotePlugin(),
-    // new CopyWebpackPlugin({
-    //   patterns: [{ from: path.resolve(__dirname, 'locales'), to: 'locales' }],
-    // }),
+    new EnvironmentPlugin({
+      CRYOSTAT_AUTHORITY: 'http://localhost:8181',
+      PREVIEW: process.env.PREVIEW || 'false'
+    })
   ],
   devtool: isProd ? false : 'source-map',
   optimization: {
@@ -87,4 +104,4 @@ const config: Configuration = {
   },
 };
 
-export default config;
+// export default config;

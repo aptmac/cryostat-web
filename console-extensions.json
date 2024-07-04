@@ -1,10 +1,29 @@
 [
-    {
-      "type": "console.page/route",
-      "properties": {
-        "exact": true,
-        "path": "/about",
-        "component": { "$codeRef": "AboutPage" }
-      }
+  {
+    "type": "console.perspective",
+    "properties": {
+      "id": "cryostat-perspective",
+      "name": "Cryostat",
+      "icon": { "$codeRef": "perspective.icon" },
+      "landingPageURL": { "$codeRef": "perspective.getLandingPageURL" },
+      "importRedirectURL": { "$codeRef": "perspective.getImportRedirectURL" }
     }
-  ]
+  },
+  {
+    "type": "console.navigation/href",
+    "properties": {
+      "id": "cryostat-about",
+      "perspective": "cryostat-perspective",
+      "name": "About",
+      "href": "/about"
+    }
+  },
+  {
+    "type": "console.page/route",
+    "properties": {
+      "exact": true,
+      "path": "/about",
+      "component": { "$codeRef": "AboutPage" }
+    }
+  }
+]

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import build from '../build.json';
-import { NotificationsContext } from '../Shared/Services/Notifications.service';
-import { ServiceContext } from '../Shared/Services/Services';
+import build from '@app/build.json';
+import { NotificationsContext } from '@app/Shared/Services/Notifications.service';
+import { ServiceContext } from '@app/Shared/Services/Services';
 import { Text, TextContent, TextList, TextListItem, TextVariants } from '@patternfly/react-core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';

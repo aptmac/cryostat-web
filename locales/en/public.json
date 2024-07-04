@@ -141,9 +141,9 @@
     },
     "TITLE": "{{chartKind}} (last {{duration}}s, every {{period}}s)"
   },
-  "ClickableAutomatedAnalysisLabel": {
+  "ClickableAutomatedAnalysisresult": {
     "ARIA_LABELS": {
-      "POPOVER": "automated-analysis-description-popover"
+      "POPOVER": "cryostat_tmp"
     }
   },
   "Dashboard": {

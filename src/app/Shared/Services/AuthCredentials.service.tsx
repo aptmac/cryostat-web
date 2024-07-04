@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Locations } from '../../Settings/Config/CredentialsStorage';
-import { getFromLocalStorage } from '../../utils/LocalStorage';
+import { Locations } from '@app/Settings/Config/CredentialsStorage';
+import { getFromLocalStorage } from '@app/utils/LocalStorage';
 import { Observable, of } from 'rxjs';
 import type { ApiService } from './Api.service';
 import { Credential } from './service.types';

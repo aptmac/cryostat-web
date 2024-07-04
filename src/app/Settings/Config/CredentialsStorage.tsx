@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getFromLocalStorage, saveToLocalStorage } from '../../utils/LocalStorage';
+import { getFromLocalStorage, saveToLocalStorage } from '@app/utils/LocalStorage';
 import { Select, SelectOption, SelectVariant } from '@patternfly/react-core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
