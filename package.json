@@ -34,9 +34,15 @@
     "build:bundle-profile-analyze": "concurrently -c 'auto' 'yarn:build:bundle-*'",
     "yarn:install": "yarn install",
     "yarn:frzinstall": "yarn install --immutable",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "start-console": "./start-console.sh",
+    "start-plugin": "yarn webpack serve --progress",
+    "webpack": "node -r ts-node/register ./node_modules/.bin/webpack",
+    "webpack-newer": "node --loader ts-node/esm ./node_modules/.bin/webpack --config webpack.config.ts"
   },
   "devDependencies": {
+    "@openshift-console/dynamic-plugin-sdk": "1.2.0",
+    "@openshift-console/dynamic-plugin-sdk-webpack": "1.1.0",
     "@testing-library/dom": "^9.3.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.5",
@@ -87,6 +93,7 @@
     "terser-webpack-plugin": "^5.3.9",
     "ts-jest": "^27.0.5",
     "ts-loader": "^9.4.2",
+    "ts-node": "^10.8.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "tslib": "^2.6.2",
     "typescript": "^4.9.5",
@@ -94,7 +101,7 @@
     "wait-on": "^7.0.1",
     "webpack": "^5.76.2",
     "webpack-bundle-analyzer": "^4.8.0",
-    "webpack-cli": "^5.0.0",
+    "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.8.0",
     "yarn": "^1.22.19"
@@ -117,11 +124,26 @@
     "i18next-parser": "^7.7.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-i18next": "^12.3.1",
+    "react-i18next": "^11.7.3",
     "react-joyride": "^2.5.3",
-    "react-redux": "^8.0.5",
+    "react-redux": "7.2.2",
     "semver": "^7.5.4",
     "showdown": "^2.1.0"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.6.3",
+  "resolutions": {
+    "webpack": "^5.76.2"
+  },
+  "consolePlugin": {
+    "name": "cryostat-plugin",
+    "version": "0.0.1",
+    "displayName": "OpenShift Console Plugin Template",
+    "description": "Template project for OpenShift Console plugins. Edit package.json to change this message and the plugin name.",
+    "exposedModules": {
+      "PocPage": "./app/ErrorView/ErrorView"
+    },
+    "dependencies": {
+      "@console/pluginAPI": "*"
+    }
+  }
 }

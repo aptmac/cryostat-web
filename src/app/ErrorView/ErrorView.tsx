@@ -50,3 +50,20 @@ export const ErrorView: React.FC<ErrorViewProps> = ({ title, message, retryButto
     </>
   );
 };
+
+/**
+ * Will take a deeper look into this, but at the moment the console plugin extension validator
+ * seems to require a default export for exposed modules as listed in package.json.
+ * 
+ * Without the export default, the plugin compiles with this error:
+ *
+ * ERROR in console-extensions.json
+ * ExtensionValidator has reported errors
+ * Console plugin extensions (1 errors)
+ *     Invalid module export 'default' in extension [0] property 'component'
+ * 
+ * At the moment this doesn't seem to bother cryostat-web, and it lets the plugin compile,
+ * so I'll leave it.
+ * 
+ */
+export default ErrorView;
