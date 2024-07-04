@@ -3,8 +3,8 @@
       "type": "console.page/route",
       "properties": {
         "exact": true,
-        "path": "/poc",
-        "component": { "$codeRef": "PocPage" }
+        "path": "/about",
+        "component": { "$codeRef": "AboutPage" }
       }
     }
   ]

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { UPLOADS_SUBDIRECTORY } from '@app/Shared/Services/api.types';
+import { UPLOADS_SUBDIRECTORY } from '../Shared/Services/api.types';
 import { ISortBy, SortByDirection } from '@patternfly/react-table';
 import _ from 'lodash';
 import { useHistory } from 'react-router-dom';

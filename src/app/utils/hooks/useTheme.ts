@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ThemeSetting, ThemeType } from '@app/Settings/types';
-import { ServiceContext } from '@app/Shared/Services/Services';
+import { ThemeSetting, ThemeType } from '../../Settings/types';
+import { ServiceContext } from '../../Shared/Services/Services';
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 
