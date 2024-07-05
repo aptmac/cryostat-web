@@ -140,7 +140,8 @@
     "displayName": "OpenShift Console Plugin Template",
     "description": "Template project for OpenShift Console plugins. Edit package.json to change this message and the plugin name.",
     "exposedModules": {
-      "PocPage": "./app/ErrorView/ErrorView"
+      "AboutPage": "./app/About/About",
+      "perspective": "./app/Console/perspective"
     },
     "dependencies": {
       "@console/pluginAPI": "*"
