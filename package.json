@@ -37,8 +37,7 @@
     "type-check": "tsc --noEmit",
     "start-console": "./start-console.sh",
     "start-plugin": "yarn webpack serve --progress",
-    "webpack": "node -r ts-node/register ./node_modules/.bin/webpack",
-    "webpack-newer": "node --loader ts-node/esm ./node_modules/.bin/webpack --config webpack.config.ts"
+    "webpack": "node -r ts-node/register ./node_modules/.bin/webpack"
   },
   "devDependencies": {
     "@openshift-console/dynamic-plugin-sdk": "1.2.0",
@@ -141,6 +140,7 @@
     "description": "Template project for OpenShift Console plugins. Edit package.json to change this message and the plugin name.",
     "exposedModules": {
       "AboutPage": "./app/About/About",
+      "IFramePage": "./app/Console/IFramePage",
       "perspective": "./app/Console/perspective"
     },
     "dependencies": {
