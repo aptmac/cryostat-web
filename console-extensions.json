@@ -28,6 +28,15 @@
     }
   },
   {
+    "type": "console.navigation/href",
+    "properties": {
+      "id": "cryostat-about",
+      "perspective": "cryostat-perspective",
+      "name": "POC Page",
+      "href": "/pocpage"
+    }
+  },
+  {
     "type": "console.page/route",
     "properties": {
       "exact": true,
@@ -41,6 +50,14 @@
       "exact": true,
       "path": "/iframe",
       "component": { "$codeRef": "IFramePage" }
+    }
+  },
+  {
+    "type": "console.page/route",
+    "properties": {
+      "exact": true,
+      "path": "/pocpage",
+      "component": { "$codeRef": "POCPage" }
     }
   }
 ]

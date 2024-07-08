@@ -141,6 +141,7 @@
     "exposedModules": {
       "AboutPage": "./app/About/About",
       "IFramePage": "./app/Console/IFramePage",
+      "POCPage": "./app/Console/POCPage",
       "perspective": "./app/Console/perspective"
     },
     "dependencies": {
