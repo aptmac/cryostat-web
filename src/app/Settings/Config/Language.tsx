@@ -15,8 +15,7 @@
  */
 import { FeatureLevel } from '@app/Shared/Services/service.types';
 import { portalRoot } from '@app/utils/utils';
-import { i18nLanguages, i18nResources } from '@i18n/i18n';
-import { localeReadable } from '@i18n/i18nextUtil';
+import { i18nLanguages, i18nResources, localeReadable } from '@i18n/i18nextUtil';
 import { useCryostatTranslation } from '@i18n/i18nextUtil';
 import { MenuToggle, MenuToggleElement, Select, SelectList, SelectOption } from '@patternfly/react-core';
 import * as React from 'react';

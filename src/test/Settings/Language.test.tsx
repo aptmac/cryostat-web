@@ -15,8 +15,7 @@
  */
 
 import { Language } from '@app/Settings/Config/Language';
-import { i18nLanguages } from '@i18n/i18n';
-import { localeReadable } from '@i18n/i18nextUtil';
+import { i18nLanguages, localeReadable } from '@i18n/i18nextUtil';
 import { act, cleanup, screen, waitFor, within } from '@testing-library/react';
 import i18next from 'i18next';
 import * as React from 'react';

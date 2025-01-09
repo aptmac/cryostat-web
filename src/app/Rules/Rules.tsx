@@ -58,7 +58,7 @@ import {
 } from '@patternfly/react-table';
 import _ from 'lodash';
 import * as React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { first } from 'rxjs/operators';
 import { RuleDeleteWarningModal } from './RuleDeleteWarningModal';
