@@ -15,9 +15,10 @@
  */
 
 import { Language } from '@app/Settings/Config/Language';
-import i18next, { i18nLanguages } from '@i18n/config';
+import { i18nLanguages } from '@i18n/i18n';
 import { localeReadable } from '@i18n/i18nextUtil';
 import { act, cleanup, screen, waitFor, within } from '@testing-library/react';
+import i18next from 'i18next';
 import * as React from 'react';
 import { render, testT } from '../utils';
 
@@ -28,7 +29,7 @@ describe('<Language/>', () => {
   });
 
   beforeEach(() => {
-    // Shared instance of i18next
+    // Shared instance of i18n
     i18next.changeLanguage(detectedLanguage);
   });
 

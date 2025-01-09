@@ -24,7 +24,7 @@ import { MBeanMetricsChartController } from '@app/Dashboard/Charts/mbean/MBeanMe
 import { ThemeSetting } from '@app/Settings/types';
 import { MBeanMetrics } from '@app/Shared/Services/api.types';
 import { defaultServices } from '@app/Shared/Services/Services';
-import '@i18n/config';
+import '@i18n/i18n';
 import { defaultDatetimeFormat } from '@i18n/datetime';
 import { mockMediaQueryList, renderSnapshot } from '@test/utils';
 import { cleanup } from '@testing-library/react';

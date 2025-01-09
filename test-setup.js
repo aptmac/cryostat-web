@@ -1,6 +1,6 @@
 // Mock out the services shared across the app in order to help isolate
 // components from the ServiceContext
-import '@i18n/config';
+import '@i18n/i18n';
 
 jest.mock('@app/Shared/Services/Api.service');
 jest.mock('@app/Shared/Services/Login.service');

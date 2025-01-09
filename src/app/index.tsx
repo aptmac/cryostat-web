@@ -19,7 +19,7 @@ import '@patternfly/react-catalog-view-extension/dist/css/react-catalog-view-ext
 import '@patternfly/quickstarts/dist/quickstarts.min.css';
 import '@app/app.css';
 import '@app/Topology/styles/base.css';
-import '@i18n/config';
+import 'i18n';
 import { AppLayout } from '@app/AppLayout/AppLayout';
 import { AppRoutes } from '@app/routes';
 import { store } from '@app/Shared/Redux/ReduxStore';
