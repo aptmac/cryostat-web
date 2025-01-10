@@ -39,6 +39,8 @@ import {
 import * as React from 'react';
 import { Trans } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { AutomatedAnalysis } from './Config/AutomatedAnalysis';
 import { AutoRefresh } from './Config/AutoRefresh';
 import { ChartCards } from './Config/ChartCards';

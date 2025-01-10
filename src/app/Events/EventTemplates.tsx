@@ -25,7 +25,7 @@ import { LoadingProps } from '@app/Shared/Components/types';
 import { EventTemplate, NotificationCategory, Target } from '@app/Shared/Services/api.types';
 import { ServiceContext } from '@app/Shared/Services/Services';
 import { useSubscriptions } from '@app/utils/hooks/useSubscriptions';
-import { portalRoot, sortResources, TableColumn } from '@app/utils/utils';
+import { getPath, portalRoot, sortResources, TableColumn } from '@app/utils/utils';
 import { useCryostatTranslation } from '@i18n/i18nextUtil';
 import {
   ActionGroup,
@@ -60,7 +60,7 @@ import {
 } from '@patternfly/react-table';
 import _ from 'lodash';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, concatMap, defaultIfEmpty, first, tap } from 'rxjs/operators';
 
@@ -255,7 +255,7 @@ export const EventTemplates: React.FC<EventTemplatesProps> = () => {
         {
           title: 'Create Recording...',
           onClick: () =>
-            navigate('/recordings/create', {
+            navigate(getPath('/recordings/create'), {
               state: { template: { name: t.name, type: t.type } } as Partial<CustomRecordingFormData>,
             }),
         },

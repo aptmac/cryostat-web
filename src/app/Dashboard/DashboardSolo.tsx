@@ -15,6 +15,7 @@
  */
 import { RootState } from '@app/Shared/Redux/ReduxStore';
 import { TargetView } from '@app/TargetView/TargetView';
+import { getPath } from '@app/utils/utils';
 import {
   Bullseye,
   Button,
@@ -27,7 +28,8 @@ import {
 import { MonitoringIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { CardConfig } from './types';
 import { getCardDescriptorByName } from './utils';
 
@@ -69,7 +71,7 @@ const DashboardSolo: React.FC<DashboardSoloProps> = () => {
               Provide valid <code>layout</code> and <code>cardId</code> query parameters and try again.
             </EmptyStateBody>
             <EmptyStateFooter>
-              <Button variant="primary" onClick={() => navigate('/')}>
+              <Button variant="primary" onClick={() => navigate(getPath('/'))}>
                 Back to Dashboard
               </Button>
             </EmptyStateFooter>

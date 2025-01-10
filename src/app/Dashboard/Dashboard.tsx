@@ -26,11 +26,12 @@ import { FeatureLevel } from '@app/Shared/Services/service.types';
 import { ServiceContext } from '@app/Shared/Services/Services';
 import { TargetView } from '@app/TargetView/TargetView';
 import { getFromLocalStorage } from '@app/utils/LocalStorage';
+import { getPath } from '@app/utils/utils';
 import { useCryostatTranslation } from '@i18n/i18nextUtil';
 import { Grid, GridItem } from '@patternfly/react-core';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { AddCard } from './AddCard';
 import { ChartContext } from './Charts/context';
 import { JFRMetricsChartController } from './Charts/jfr/JFRMetricsChartController';
@@ -130,7 +131,7 @@ export const Dashboard: React.FC<DashboardComponentProps> = (_) => {
                       key={`${cfg.name}-actions`}
                       onRemove={() => handleRemove(idx)}
                       onResetSize={() => handleResetSize(idx)}
-                      onView={() => navigate(`/d-solo?layout=${currLayout.name}&cardId=${cfg.id}`)}
+                      onView={() => navigate(getPath(`/d-solo?layout=${currLayout.name}&cardId=${cfg.id}`))}
                     />,
                   ],
                 })

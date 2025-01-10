@@ -33,7 +33,7 @@ import { ServiceContext } from '@app/Shared/Services/Services';
 import { useSubscriptions } from '@app/utils/hooks/useSubscriptions';
 import { useTheme } from '@app/utils/hooks/useTheme';
 import { saveToLocalStorage } from '@app/utils/LocalStorage';
-import { cleanDataId, isAssetNew, openTabForUrl, portalRoot } from '@app/utils/utils';
+import { cleanDataId, getPath, isAssetNew, openTabForUrl, portalRoot } from '@app/utils/utils';
 import { useCryostatTranslation } from '@i18n/i18nextUtil';
 import {
   Alert,
@@ -81,7 +81,7 @@ import {
 import _ from 'lodash';
 import * as React from 'react';
 import { Trans } from 'react-i18next';
-import { Link, matchPath, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, matchPath, NavLink, useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { map } from 'rxjs/operators';
 import { LogoutIcon } from './LogoutIcon';
 import { ThemeToggle } from './ThemeToggle';
@@ -272,7 +272,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     if (location.pathname === '/settings') {
       selectTab(SettingTab.GENERAL);
     } else {
-      navigate(`/settings?${new URLSearchParams({ tab: tabAsParam(SettingTab.GENERAL) })}`);
+      navigate(getPath(`/settings?${new URLSearchParams({ tab: tabAsParam(SettingTab.GENERAL) })}`));
     }
   }, [location, navigate]);
 

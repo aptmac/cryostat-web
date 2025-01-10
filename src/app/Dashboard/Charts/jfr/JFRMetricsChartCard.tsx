@@ -26,6 +26,7 @@ import { ServiceContext } from '@app/Shared/Services/Services';
 import { useSubscriptions } from '@app/utils/hooks/useSubscriptions';
 import { useTheme } from '@app/utils/hooks/useTheme';
 import { useCryostatTranslation } from '@i18n/i18nextUtil';
+import { getPath } from '@app/utils/utils';
 import {
   Bullseye,
   Button,
@@ -43,7 +44,7 @@ import {
 import { DataSourceIcon, ExternalLinkAltIcon, SyncAltIcon, TachometerAltIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 import { Trans } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { interval } from 'rxjs';
 import { DashboardCard } from '../../DashboardCard';
 import { ChartContext } from '../context';
@@ -213,7 +214,7 @@ export const JFRMetricsChartCard: DashboardCardFC<JFRMetricsChartCardProps> = (p
   }, [props.actions, props.chartKind, props.duration, props.period, t, controllerState, actions]);
 
   const handleCreateRecording = React.useCallback(() => {
-    navigate('/recordings/create', {
+    navigate(getPath('/recordings/create'), {
       state: {
         name: RECORDING_NAME,
         template: {

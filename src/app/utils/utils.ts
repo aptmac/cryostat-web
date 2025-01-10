@@ -19,12 +19,13 @@ import { ISortBy, SortByDirection, ThProps } from '@patternfly/react-table';
 import humanizeDuration from 'humanize-duration';
 import { TFunction } from 'i18next';
 import _ from 'lodash';
-import { NavigateFunction } from 'react-router-dom';
+import { NavigateFunction } from 'react-router-dom-v5-compat';
 import { BehaviorSubject, Observable } from 'rxjs';
 import semverGt from 'semver/functions/gt';
 import semverValid from 'semver/functions/valid';
 import { getFromLocalStorage } from './LocalStorage';
 
+export const BASEPATH = process.env.BASEPATH || '';
 const SECOND_MILLIS = 1000;
 const MINUTE_MILLIS = 60 * SECOND_MILLIS;
 const HOUR_MILLIS = 60 * MINUTE_MILLIS;
@@ -268,3 +269,8 @@ export const isAssetNew = (currVer: string) => {
   const oldVer: string = getFromLocalStorage('ASSET_VERSION', '0.0.0');
   return !semverValid(oldVer) || semverGt(currVer, oldVer);
 };
+
+export const getPath = (path: string) => {
+  // incoming path already includes /, so don't add another one here
+  return `/${BASEPATH}${path}`
+}

@@ -15,7 +15,7 @@
  */
 
 import * as React from 'react';
-import { useLocation, Route, Routes } from 'react-router-dom';
+import { useLocation, Route, Routes } from 'react-router-dom-v5-compat';
 import About from './About/About';
 import Archives from './Archives/Archives';
 import CreateRecording from './CreateRecording/CreateRecording';
@@ -35,7 +35,7 @@ import CreateTarget from './Topology/Actions/CreateTarget';
 import Topology from './Topology/Topology';
 import { useDocumentTitle } from './utils/hooks/useDocumentTitle';
 import { useFeatureLevel } from './utils/hooks/useFeatureLevel';
-import { accessibleRouteChangeHandler } from './utils/utils';
+import { accessibleRouteChangeHandler, BASEPATH } from './utils/utils';
 
 let routeFocusTimer: number;
 const OVERVIEW = 'Overview';
@@ -51,6 +51,7 @@ export interface IAppRoute {
   navGroup?: string;
   featureLevel?: FeatureLevel;
   children?: IAppRoute[];
+  basepath?: string;
 }
 
 const routes: IAppRoute[] = [
@@ -64,7 +65,6 @@ const routes: IAppRoute[] = [
   },
   {
     component: Dashboard,
-
     label: 'Dashboard',
     path: '/',
     title: 'Dashboard',
@@ -80,7 +80,6 @@ const routes: IAppRoute[] = [
   },
   {
     component: QuickStarts,
-
     label: 'Quick starts',
     path: '/quickstarts',
     title: 'Quick starts',
@@ -88,7 +87,6 @@ const routes: IAppRoute[] = [
   },
   {
     component: Topology,
-
     label: 'Topology',
     path: '/topology',
     title: 'Topology',
@@ -96,7 +94,6 @@ const routes: IAppRoute[] = [
     children: [
       {
         component: CreateTarget,
-
         path: '/topology/create-custom-target',
         title: 'Create Custom Target',
       },
@@ -104,7 +101,6 @@ const routes: IAppRoute[] = [
   },
   {
     component: RulesTable,
-
     label: 'Automated Rules',
     path: '/rules',
     title: 'Automated Rules',
@@ -114,7 +110,6 @@ const routes: IAppRoute[] = [
     children: [
       {
         component: CreateRule,
-
         path: '/rules/create',
         title: 'Create Automated Rule',
       },
@@ -122,7 +117,6 @@ const routes: IAppRoute[] = [
   },
   {
     component: Recordings,
-
     label: 'Recordings',
     path: '/recordings',
     title: 'Recordings',
@@ -131,7 +125,6 @@ const routes: IAppRoute[] = [
     children: [
       {
         component: CreateRecording,
-
         path: '/recordings/create',
         title: 'Create Recording',
       },
@@ -139,7 +132,6 @@ const routes: IAppRoute[] = [
   },
   {
     component: Archives,
-
     label: 'Archives',
     path: '/archives',
     title: 'Archives',
@@ -149,7 +141,6 @@ const routes: IAppRoute[] = [
   },
   {
     component: Events,
-
     label: 'Events',
     path: '/events',
     title: 'Events',
@@ -158,7 +149,6 @@ const routes: IAppRoute[] = [
   },
   {
     component: SecurityPanel,
-
     label: 'Security',
     path: '/security',
     title: 'Security',
@@ -167,7 +157,6 @@ const routes: IAppRoute[] = [
   },
   {
     component: Settings,
-
     path: '/settings',
     title: 'Settings',
     description: 'View or modify Cryostat web-client application settings.',
@@ -176,7 +165,8 @@ const routes: IAppRoute[] = [
 
 const flatten = (routes: IAppRoute[]): IAppRoute[] => {
   const ret: IAppRoute[] = [];
-  for (const r of routes) {
+  for (var r of routes) {
+    r = appendBasepath(r);
     ret.push(r);
     if (r.children) {
       ret.push(...flatten(r.children));
@@ -184,6 +174,14 @@ const flatten = (routes: IAppRoute[]): IAppRoute[] => {
   }
   return ret;
 };
+
+const appendBasepath = (route: IAppRoute): IAppRoute => {
+  if (BASEPATH) {
+    route.basepath = BASEPATH;
+    route.path = `/${BASEPATH}/${route.path}`;
+  }
+  return route;
+}
 
 // a custom hook for sending focus to the primary content container
 // after a view has loaded so that subsequent press of tab key
