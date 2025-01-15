@@ -75,9 +75,9 @@ import {
   UploadIcon,
 } from '@patternfly/react-icons';
 import { InnerScrollContainer } from '@patternfly/react-table';
-import { TFunction } from 'i18next';
 import _ from 'lodash';
 import * as React from 'react';
+import { TFunction } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChartContext } from './Charts/context';
 import { CryostatLayoutTemplates, BlankLayout } from './cryostat-dashboard-templates';

@@ -31,7 +31,7 @@ import { defaultServices } from '@app/Shared/Services/Services';
 import { defaultDatetimeFormat } from '@i18n/datetime';
 import { Toolbar, ToolbarContent } from '@patternfly/react-core';
 import { cleanup, screen, within, act, waitFor } from '@testing-library/react';
-import { TFunction } from 'i18next';
+import { TFunction } from 'react-i18next';
 import { of } from 'rxjs';
 import { basePreloadedState, render, testT } from '../utils';
 

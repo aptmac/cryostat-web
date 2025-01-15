@@ -17,8 +17,8 @@
 import { KeyValue } from '@app/Shared/Services/api.types';
 import { ISortBy, SortByDirection, ThProps } from '@patternfly/react-table';
 import humanizeDuration from 'humanize-duration';
-import { TFunction } from 'i18next';
 import _ from 'lodash';
+import { TFunction } from 'react-i18next';
 import { NavigateFunction } from 'react-router-dom-v5-compat';
 import { BehaviorSubject, Observable } from 'rxjs';
 import semverGt from 'semver/functions/gt';

@@ -15,8 +15,8 @@
  */
 import { useCryostatTranslation } from '@i18n/i18nextUtil';
 import { MenuToggle, MenuToggleElement, Select, SelectList, SelectOption } from '@patternfly/react-core';
-import { TFunction } from 'i18next';
 import * as React from 'react';
+import { TFunction } from 'react-i18next';
 
 export enum DurationUnit {
   HOUR = 60 * 60,

@@ -36,8 +36,8 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { FileIcon, OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import { TFunction } from 'i18next';
 import * as React from 'react';
+import { TFunction } from 'react-i18next';
 import { tap } from 'rxjs/operators';
 import { SecurityCard } from './types';
 

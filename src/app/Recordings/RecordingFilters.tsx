@@ -38,8 +38,8 @@ import {
   Icon,
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
-import { TFunction } from 'i18next';
 import * as React from 'react';
+import { TFunction } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTimeFilter, DateTimeRange, filterRecordingByDatetime } from './Filters/DatetimeFilter';
 import { compareDuration, DurationFilter, DurationRange, filterRecordingByDuration } from './Filters/DurationFilter';

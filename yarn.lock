@@ -430,7 +430,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.13":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.14.5":
   version: 7.26.0
   resolution: "@babel/runtime@npm:7.26.0"
   dependencies:
@@ -454,15 +454,6 @@ __metadata:
   dependencies:
     regenerator-runtime: ^0.14.0
   checksum: eba85bd24d250abb5ae19b16cffc15a54d3894d8228ace40fa4c0e2f1938f28b38ad3e3430ebff9a1ef511eeb8c527e36044ac19076d6deafa52cef35d8624b9
-  languageName: node
-  linkType: hard
-
-"@babel/runtime@npm:^7.25.0":
-  version: 7.25.6
-  resolution: "@babel/runtime@npm:7.25.6"
-  dependencies:
-    regenerator-runtime: ^0.14.0
-  checksum: ee1a69d3ac7802803f5ee6a96e652b78b8addc28c6a38c725a4ad7d61a059d9e6cb9f6550ed2f63cce67a1bd82e0b1ef66a1079d895be6bfb536a5cfbd9ccc32
   languageName: node
   linkType: hard
 
@@ -4408,7 +4399,7 @@ __metadata:
     raw-loader: ^4.0.2
     react: ^17.0.2
     react-dom: ^17.0.2
-    react-i18next: ^15.1.0
+    react-i18next: ^11.7.3
     react-joyride: ^2.9.2
     react-redux: ^8.0.5
     react-router-dom: 5.3.x
@@ -11485,21 +11476,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:^15.1.0":
-  version: 15.1.0
-  resolution: "react-i18next@npm:15.1.0"
+"react-i18next@npm:^11.7.3":
+  version: 11.18.6
+  resolution: "react-i18next@npm:11.18.6"
   dependencies:
-    "@babel/runtime": ^7.25.0
+    "@babel/runtime": ^7.14.5
     html-parse-stringify: ^3.0.1
   peerDependencies:
-    i18next: ">= 23.2.3"
+    i18next: ">= 19.0.0"
     react: ">= 16.8.0"
   peerDependenciesMeta:
     react-dom:
       optional: true
     react-native:
       optional: true
-  checksum: 0e6efb45960a505fc3a531c64976208bc0620782855dfc4de077e47caf9485745ad25c8eab6c9940e6bd20f9192d9e0f2af7e7fb00cceae84cdf53ff163cff81
+  checksum: 624c0a0313fac4e0d18560b83c99a8bd0a83abc02e5db8d01984e0643ac409d178668aa3a4720d01f7a0d9520d38598dcbff801d6f69a970bae67461de6cd852
   languageName: node
   linkType: hard
 

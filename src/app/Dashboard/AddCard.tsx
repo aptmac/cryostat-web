@@ -77,9 +77,9 @@ import {
   MenuToggleElement,
 } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons';
-import { TFunction } from 'i18next';
 import { nanoid } from 'nanoid';
 import * as React from 'react';
+import { TFunction } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Observable, of } from 'rxjs';
 import { ChartContext } from './Charts/context';
