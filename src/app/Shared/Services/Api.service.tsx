@@ -180,6 +180,14 @@ export class ApiService {
       });
   }
 
+  private headers: [string, string][] = [];
+  setHeaders(headers: [string, string][]): void {
+    this.headers = headers;
+  }
+  getHeaders(): [string, string][] {
+    return this.headers;
+  }
+
   getTargets(): Observable<Target[]> {
     return this.doGet('targets', 'v4');
   }
@@ -1448,6 +1456,15 @@ export class ApiService {
     suppressNotifications = false,
     skipStatusCheck = false,
   ): Observable<Response> {
+    if (this.headers) {
+      if (!config) {
+        config = {};
+      }
+      if (!config.headers) {
+        config.headers = {};
+      }
+      config.headers = this.getHeaders();
+    }
     const req = () =>
       fromFetch(`${this.login.authority}/api/${apiVersion}/${path}${params ? '?' + params : ''}`, config).pipe(
         map((resp) => {
