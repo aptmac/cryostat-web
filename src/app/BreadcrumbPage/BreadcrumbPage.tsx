@@ -21,6 +21,7 @@ import {
   PageSection,
   Stack,
   StackItem,
+  Title,
 } from '@patternfly/react-core';
 import * as React from 'react';
 import { Link } from 'react-router-dom-v5-compat';
@@ -37,13 +38,14 @@ export const BreadcrumbPage: React.FC<BreadcrumbPageProps> = ({ pageTitle, bread
   return (
     <PageGroup>
       <PageSection isFilled>
+        <Title headingLevel="h1">{pageTitle}</Title>
         <Breadcrumb>
           {(breadcrumbs || []).map(({ title, path }) => (
             <BreadcrumbItem key={path}>
               <Link to={path}>{title}</Link>
             </BreadcrumbItem>
           ))}
-          <BreadcrumbHeading>{pageTitle}</BreadcrumbHeading>
+          <BreadcrumbHeading>{breadcrumbs ? pageTitle : undefined}</BreadcrumbHeading>
         </Breadcrumb>
         <Stack hasGutter={true}>
           {React.Children.map(children, (child) => (

@@ -38,6 +38,7 @@ import Topology from './Topology/Topology';
 import { useDocumentTitle } from './utils/hooks/useDocumentTitle';
 import { useFeatureLevel } from './utils/hooks/useFeatureLevel';
 import { accessibleRouteChangeHandler, BASEPATH, toPath } from './utils/utils';
+import Analysis from './Analysis/Analysis';
 
 let routeFocusTimer: number;
 const OVERVIEW = 'Routes.NavGroups.OVERVIEW';
@@ -161,6 +162,15 @@ const flightRecorderRoutes: IAppRoute[] = [
     path: toPath('/reports'),
     title: 'Automated Reports',
     description: 'View Automated Analysis Reports across all target JVMs.',
+    navGroup: FLIGHT_RECORDER,
+    navSubgroup: ANALYZE,
+  },
+  {
+    component: Analysis,
+    label: 'JFR Analysis',
+    path: toPath('/analysis'),
+    title: 'JFR Analysis',
+    description: 'View JFR data',
     navGroup: FLIGHT_RECORDER,
     navSubgroup: ANALYZE,
   },

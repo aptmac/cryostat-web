@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /* eslint-disable  @typescript-eslint/no-explicit-any */
+import { AnalysisPage } from '@app/Analysis/Analysis';
 import { LayoutTemplate, SerialLayoutTemplate } from '@app/Dashboard/types';
 import { createBlobURL } from '@app/utils/utils';
 import { ValidatedOptions } from '@patternfly/react-core';
@@ -31,7 +32,7 @@ import {
   throwError,
 } from 'rxjs';
 import { fromFetch } from 'rxjs/fetch';
-import { catchError, concatMap, filter, first, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, filter, first, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import {
   GrafanaDatasourceUrlGetResponse,
   GrafanaDashboardUrlGetResponse,
@@ -68,6 +69,7 @@ import {
   MBeanMetricsResponse,
   BuildInfo,
   AggregateReport,
+  NullableRecording,
 } from './api.types';
 import {
   isHttpError,
@@ -978,6 +980,23 @@ export class ApiService {
     );
   }
 
+  getEventsForRecording(jvmId: string, recordingName: string, page: AnalysisPage): Observable<string> {
+    if (!jvmId || !recordingName) {
+      return of('');
+    }
+    return this.sendRequest(
+      'beta',
+      `analysis/${jvmId}/${recordingName}/${page}`,
+      {
+        method: 'GET',
+      }
+    ).pipe(
+      concatMap((resp) => {
+        return resp.json();
+      })
+    )
+  }
+
   graphql<T>(
     query: string,
     variables?: unknown,
@@ -1537,6 +1556,15 @@ export class ApiService {
         return nodes[0]?.target?.mbeanMetrics ?? {};
       }),
       catchError((_) => of({})),
+    );
+  }
+
+  getArchivedRecordings(): Observable<ArchivedRecording[]> {
+    return this.getTargets().pipe(
+      concatMap(targets => targets),
+      switchMap(target =>
+        this.getTargetArchivedRecordings(target)
+      )
     );
   }
 

@@ -800,3 +800,13 @@ svg.topology__node-decorator-icon.danger {
 .match-expression-display {
   padding: .25rem .5rem !important;
 }
+
+iframe#flamegraph {
+  width: -webkit-fill-available;
+  height: 626px;
+}
+
+iframe#event-browser {
+  width: -webkit-fill-available;
+  height: 600px;
+}

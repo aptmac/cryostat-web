@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { NullableTarget } from './api.types';
+import { ArchivedRecording, NullableRecording, NullableTarget } from './api.types';
 
 class TargetService {
   private readonly _target: Subject<NullableTarget> = new BehaviorSubject(undefined);
+  private readonly _recording: Subject<NullableRecording> = new BehaviorSubject(undefined);
   private readonly _authFailure: Subject<void> = new Subject();
   private readonly _authRetry: Subject<void> = new Subject();
   private readonly _sslFailure: Subject<void> = new Subject();
+
+  setRecording(recording?: ArchivedRecording): void {
+    if (!recording || recording.name !== '') {
+      this._recording.next(recording);
+    } else {
+      throw new Error('Error');
+    }
+  }
 
   setTarget(target?: NullableTarget): void {
     if (!target || target.connectUrl !== '') {
@@ -32,6 +41,10 @@ class TargetService {
 
   target(): Observable<NullableTarget> {
     return this._target.asObservable();
+  }
+
+  recording(): Observable<NullableRecording> {
+    return this._recording.asObservable();
   }
 
   authFailure(): Observable<void> {
