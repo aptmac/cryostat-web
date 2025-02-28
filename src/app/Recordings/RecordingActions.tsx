@@ -46,6 +46,7 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
   const capabilities = React.useContext(CapabilitiesContext);
   const notifications = React.useContext(NotificationsContext);
   const [grafanaEnabled, setGrafanaEnabled] = React.useState(false);
+  const [jmcConnected, setJmcConnected] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
   const addSubscription = useSubscriptions();
@@ -62,7 +63,12 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
           .subscribe(() => setGrafanaEnabled(true)),
       );
     }
-  }, [capabilities, context.api, setGrafanaEnabled, addSubscription]);
+    if (true) {
+      setJmcConnected(true);
+    } else {
+      setJmcConnected(false);
+    }
+  }, [capabilities, context.api, setJmcConnected, setGrafanaEnabled, addSubscription]);
 
   const grafanaUpload = React.useCallback(() => {
     addSubscription(
@@ -84,6 +90,10 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
     context.api.downloadRecording(recording);
   }, [context.api, recording]);
 
+  const handleJmcUpload = React.useCallback(() => {
+    context.api.sendRecordingToJmc(recording);
+  }, [context.api, recording]);
+
   const actionItems = React.useMemo(() => {
     const actionItems = [
       {
@@ -92,6 +102,13 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
         onClick: handleDownloadRecording,
       },
     ] as RowAction[];
+    if (jmcConnected) {
+      actionItems.push(      {
+        title: 'View in JDK Mission Control ...',
+        key: 'view-in-jmc',
+        onClick: handleJmcUpload,
+      })
+    }
     if (grafanaEnabled) {
       actionItems.push({
         title: 'View in Grafana ...',
@@ -101,7 +118,7 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
     }
 
     return actionItems;
-  }, [handleDownloadRecording, grafanaEnabled, grafanaUpload]);
+  }, [handleDownloadRecording, jmcConnected, handleJmcUpload, grafanaEnabled, grafanaUpload]);
 
   const onSelect = React.useCallback(
     (action: RowAction) => {

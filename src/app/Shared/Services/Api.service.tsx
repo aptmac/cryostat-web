@@ -858,6 +858,33 @@ export class ApiService {
     return req();
   }
 
+  sendRecordingToJmc(recording: Recording): void {
+    console.warn(recording.downloadUrl);
+    let apiPath = recording.downloadUrl.split('v4/')
+    this.sendRequest('v4', apiPath[1], {
+      method: 'GET',
+    }).subscribe((resp) => {
+      resp.blob().then((blob) => {
+        const connection = new WebSocket("ws://localhost:8029/cryostat/");
+        connection.onopen = () => {
+          connection.send(recording.name);
+          this.notifications.success(
+            `View in JDK Mission Control: ${recording.name}`,
+            `Sending recording (${recording.name}) to JDK Mission Control`,
+          );
+          connection.send(blob);
+          connection.close();
+        }
+        connection.onerror = () => {
+          this.notifications.warning(
+            'Warning: Unable to view in JDK Mission Control',
+            'Ensure that you have a running JDK Mission Control application with the Cryostat Plugin installed'
+          )
+        }
+      })
+    });
+  }
+
   downloadRecording(recording: Recording): void {
     this.ctx.url(recording.downloadUrl).subscribe((resourceUrl) => {
       this.downloadFile(resourceUrl, recording.name + (recording.name.endsWith('.jfr') ? '' : '.jfr'));
