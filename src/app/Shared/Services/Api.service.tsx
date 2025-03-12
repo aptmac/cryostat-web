@@ -30,7 +30,7 @@ import {
   throwError,
 } from 'rxjs';
 import { fromFetch } from 'rxjs/fetch';
-import { catchError, concatMap, filter, first, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, filter, first, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import {
   GrafanaDatasourceUrlGetResponse,
   GrafanaDashboardUrlGetResponse,
@@ -1403,6 +1403,15 @@ export class ApiService {
         return nodes[0]?.target?.mbeanMetrics ?? {};
       }),
       catchError((_) => of({})),
+    );
+  }
+
+  getArchivedRecordings() {
+    return this.getTargets().pipe(
+      concatMap(targets => targets),
+      switchMap(target => 
+        this.getTargetArchivedRecordings(target)
+      )
     );
   }
 

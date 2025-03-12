@@ -16,7 +16,7 @@
 import { CryostatLink } from '@app/Shared/Components/CryostatLink';
 import { LinearDotSpinner } from '@app/Shared/Components/LinearDotSpinner';
 import { ScrollableMenuContent } from '@app/Shared/Components/ScrollableMenuContent';
-import { Target } from '@app/Shared/Services/api.types';
+import { ArchivedRecording, Target } from '@app/Shared/Services/api.types';
 import { isEqualTarget, getTargetRepresentation } from '@app/Shared/Services/api.utils';
 import { ServiceContext } from '@app/Shared/Services/Services';
 import { useSubscriptions } from '@app/utils/hooks/useSubscriptions';
@@ -42,49 +42,55 @@ import {
 import _ from 'lodash';
 import * as React from 'react';
 
-export interface TargetContextSelectorProps {
+export interface RecordingContextSelectorProps {
   className?: string;
 }
 
-export const RecordingContextSelector: React.FC<TargetContextSelectorProps> = ({ className, ...props }) => {
+export const RecordingContextSelector: React.FC<RecordingContextSelectorProps> = ({ className, ...props }) => {
   const context = React.useContext(ServiceContext);
   const addSubscription = useSubscriptions();
 
   const { t } = useCryostatTranslation();
+  const [recordings, setRecordings] = React.useState<ArchivedRecording[]>([]);
   const [targets, setTargets] = React.useState<Target[]>([]);
-  const [selectedTarget, setSelectedTarget] = React.useState<Target>();
-  const [favorites, setFavorites] = React.useState<string[]>(getFromLocalStorage('TARGET_FAVORITES', []));
+  const [selectedRecording, setSelectedRecording] = React.useState<Target>();
+  const [favorites, setFavorites] = React.useState<string[]>(getFromLocalStorage('RECORDING_FAVORITES', []));
   const [searchTerm, setSearchTerm] = React.useState<string>('');
-  const [isTargetOpen, setIsTargetOpen] = React.useState(false);
+  const [isRecordingOpen, setIsRecordingOpen] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
 
   const onToggleClick = React.useCallback(() => {
-    setIsTargetOpen((v) => !v);
-  }, [setIsTargetOpen]);
+    setIsRecordingOpen((v) => !v);
+  }, [setIsRecordingOpen]);
 
   const onSelect = React.useCallback(
-    (_, target) => {
-      setIsTargetOpen(false);
-      if (!isEqualTarget(target, selectedTarget)) {
-        setSelectedTarget(target);
-        context.target.setTarget(target);
+    (_, recording) => {
+      setIsRecordingOpen(false);
+      if (!isEqualTarget(recording, selectedRecording)) {
+        setSelectedRecording(recording);
+        context.target.setTarget(recording);
+        context.api.getTargetArchivedRecordings(recording).subscribe((r) => console.warn(r));
       }
     },
-    [selectedTarget, setSelectedTarget, setIsTargetOpen, context.target],
+    [selectedRecording, setSelectedRecording, setIsRecordingOpen, context.target],
   );
 
   React.useEffect(() => {
+    context.api.getArchivedRecordings().subscribe(r => {
+      console.warn('!!!- ', r);
+    });
+
     addSubscription(
-      context.target.target().subscribe((target) => {
-        setSelectedTarget(target);
-        if (target) {
+      context.target.target().subscribe((recording) => {
+        setSelectedRecording(recording);
+        if (recording) {
           // Only save to local storage when target is valid
           // NO_TARGET will clear storage
-          saveToLocalStorage('TARGET', target.connectUrl);
+          saveToLocalStorage('RECORDING', recording.connectUrl);
         }
       }),
     );
-  }, [addSubscription, context.target, setSelectedTarget]);
+  }, [addSubscription, context.target, setSelectedRecording]);
 
   React.useEffect(() => {
     addSubscription(context.targets.targets().subscribe(setTargets));
@@ -94,14 +100,14 @@ export const RecordingContextSelector: React.FC<TargetContextSelectorProps> = ({
     if (!targets.length) {
       return;
     }
-    const cachedTargetUrl = getFromLocalStorage('TARGET', '');
+    const cachedTargetUrl = getFromLocalStorage('RECORDING', '');
     const matchedTarget = targets.find((t) => t.connectUrl === cachedTargetUrl);
 
     if (matchedTarget) {
       context.target.setTarget(matchedTarget);
     } else {
       context.target.setTarget(undefined);
-      removeFromLocalStorage('TARGET');
+      removeFromLocalStorage('RECORDING');
     }
     setFavorites((old) => old.filter((f) => targets.some((t) => t.connectUrl === f)));
   }, [targets, context.target, setFavorites]);
@@ -131,7 +137,7 @@ export const RecordingContextSelector: React.FC<TargetContextSelectorProps> = ({
     if (filteredTargets.length === 0) {
       return [
         <DropdownItem itemId={undefined} key={'no-target-found'} isDisabled>
-          {t('TargetContextSelector.NO_SEARCH_MATCHES')}
+          {'No Recording found'}
         </DropdownItem>,
       ];
     }
@@ -186,7 +192,7 @@ export const RecordingContextSelector: React.FC<TargetContextSelectorProps> = ({
       setFavorites((old) => {
         const prevFav = old.includes(item.connectUrl);
         const toUpdate = prevFav ? old.filter((f) => f !== item.connectUrl) : [...old, item.connectUrl];
-        saveToLocalStorage('TARGET_FAVORITES', toUpdate);
+        saveToLocalStorage('RECORDING_FAVORITES', toUpdate);
         return toUpdate;
       });
     },
@@ -194,15 +200,15 @@ export const RecordingContextSelector: React.FC<TargetContextSelectorProps> = ({
   );
 
   const onClearSelection = React.useCallback(() => {
-    setIsTargetOpen(false);
-    removeFromLocalStorage('TARGET');
-    setSelectedTarget(undefined);
+    setIsRecordingOpen(false);
+    removeFromLocalStorage('RECORDING');
+    setSelectedRecording(undefined);
     context.target.setTarget(undefined);
-  }, [setSelectedTarget, setIsTargetOpen, context.target]);
+  }, [setSelectedRecording, setIsRecordingOpen, context.target]);
 
   const selectionPrefix = React.useMemo(
-    () => (!selectedTarget ? undefined : <span style={{ fontWeight: 700 }}>Recording:</span>),
-    [selectedTarget],
+    () => (!selectedRecording ? undefined : <span style={{ fontWeight: 700 }}>Recording:</span>),
+    [selectedRecording],
   );
 
   const selectFooter = React.useMemo(
@@ -218,7 +224,7 @@ export const RecordingContextSelector: React.FC<TargetContextSelectorProps> = ({
         </ActionListItem>
         <ActionListItem>
           <Button variant="link" onClick={onClearSelection}>
-            {t('TargetContextSelector.CLEAR_SELECTION')}
+            {'Clear selection'}
           </Button>
         </ActionListItem>
       </ActionList>
@@ -234,24 +240,24 @@ export const RecordingContextSelector: React.FC<TargetContextSelectorProps> = ({
         ) : (
           <Dropdown
             className={className}
-            placeholder={t('TargetContextSelector.TOGGLE_PLACEHOLDER')}
-            isOpen={isTargetOpen}
-            onOpenChange={setIsTargetOpen}
+            placeholder={'Select a Recording'}
+            isOpen={isRecordingOpen}
+            onOpenChange={setIsRecordingOpen}
             onOpenChangeKeys={['Escape']}
             onSelect={onSelect}
             onActionClick={onFavoriteClick}
             toggle={(toggleRef) => (
               <MenuToggle
-                aria-label={t('TargetContextSelector.TOGGLE_LABEL')}
+                aria-label={'Select a Recording'}
                 ref={toggleRef}
                 onClick={onToggleClick}
-                isExpanded={isTargetOpen}
+                isExpanded={isRecordingOpen}
                 variant="plainText"
                 icon={selectionPrefix}
               >
-                {!selectedTarget
-                  ? t('TargetContextSelector.TOGGLE_PLACEHOLDER')
-                  : getTargetRepresentation(selectedTarget)}
+                {!selectedRecording
+                  ? 'Select a Recording'
+                  : getTargetRepresentation(selectedRecording)}
               </MenuToggle>
             )}
             popperProps={{

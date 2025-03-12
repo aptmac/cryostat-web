@@ -17,6 +17,7 @@
 import { AlertVariant } from '@patternfly/react-core';
 import {
   ActiveRecording,
+  ArchivedRecording,
   EnvironmentNode,
   EventType,
   GenerationError,
