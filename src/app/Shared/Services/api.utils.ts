@@ -140,6 +140,10 @@ export const isEqualTarget = (a?: Target, b?: Target): boolean => {
   return a?.connectUrl === b?.connectUrl;
 };
 
+export const isEqualRecording = (a?: ArchivedRecording, b?: ArchivedRecording): boolean => {
+  return a?.name === b?.name;
+}
+
 export const indexOfTarget = (arr: Target[], target: Target): number => {
   let index = -1;
   arr.forEach((t, idx) => {

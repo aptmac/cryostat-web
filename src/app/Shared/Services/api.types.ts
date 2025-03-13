@@ -423,6 +423,7 @@ export interface Target {
 }
 
 export type NullableTarget = Target | undefined;
+export type NullableRecording = ArchivedRecording | undefined;
 
 export enum NodeType {
   // The entire deployment scenario Cryostat finds itself in.

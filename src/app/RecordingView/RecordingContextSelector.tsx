@@ -17,7 +17,7 @@ import { CryostatLink } from '@app/Shared/Components/CryostatLink';
 import { LinearDotSpinner } from '@app/Shared/Components/LinearDotSpinner';
 import { ScrollableMenuContent } from '@app/Shared/Components/ScrollableMenuContent';
 import { ArchivedRecording, Target } from '@app/Shared/Services/api.types';
-import { isEqualTarget, getTargetRepresentation } from '@app/Shared/Services/api.utils';
+import { isEqualTarget, getTargetRepresentation, isEqualRecording } from '@app/Shared/Services/api.utils';
 import { ServiceContext } from '@app/Shared/Services/Services';
 import { useSubscriptions } from '@app/utils/hooks/useSubscriptions';
 import { getFromLocalStorage, removeFromLocalStorage, saveToLocalStorage } from '@app/utils/LocalStorage';
@@ -52,8 +52,7 @@ export const RecordingContextSelector: React.FC<RecordingContextSelectorProps> =
 
   const { t } = useCryostatTranslation();
   const [recordings, setRecordings] = React.useState<ArchivedRecording[]>([]);
-  const [targets, setTargets] = React.useState<Target[]>([]);
-  const [selectedRecording, setSelectedRecording] = React.useState<Target>();
+  const [selectedRecording, setSelectedRecording] = React.useState<ArchivedRecording>();
   const [favorites, setFavorites] = React.useState<string[]>(getFromLocalStorage('RECORDING_FAVORITES', []));
   const [searchTerm, setSearchTerm] = React.useState<string>('');
   const [isRecordingOpen, setIsRecordingOpen] = React.useState(false);
@@ -64,53 +63,48 @@ export const RecordingContextSelector: React.FC<RecordingContextSelectorProps> =
   }, [setIsRecordingOpen]);
 
   const onSelect = React.useCallback(
-    (_, recording) => {
+    (_, recording: ArchivedRecording) => {
       setIsRecordingOpen(false);
-      if (!isEqualTarget(recording, selectedRecording)) {
+      if (!isEqualRecording(recording, selectedRecording)) {
         setSelectedRecording(recording);
-        context.target.setTarget(recording);
-        context.api.getTargetArchivedRecordings(recording).subscribe((r) => console.warn(r));
+        context.target.setRecording(recording);
       }
     },
     [selectedRecording, setSelectedRecording, setIsRecordingOpen, context.target],
   );
 
   React.useEffect(() => {
-    context.api.getArchivedRecordings().subscribe(r => {
-      console.warn('!!!- ', r);
-    });
-
     addSubscription(
-      context.target.target().subscribe((recording) => {
+      context.target.recording().subscribe((recording) => {
         setSelectedRecording(recording);
         if (recording) {
           // Only save to local storage when target is valid
           // NO_TARGET will clear storage
-          saveToLocalStorage('RECORDING', recording.connectUrl);
+          saveToLocalStorage('RECORDING', recording.name);
         }
       }),
     );
   }, [addSubscription, context.target, setSelectedRecording]);
 
   React.useEffect(() => {
-    addSubscription(context.targets.targets().subscribe(setTargets));
-  }, [addSubscription, context.targets, setTargets]);
+    addSubscription(context.api.getArchivedRecordings().subscribe(setRecordings));
+  }, [addSubscription, context.targets, setRecordings]);
 
   React.useEffect(() => {
-    if (!targets.length) {
+    if (!recordings.length) {
       return;
     }
-    const cachedTargetUrl = getFromLocalStorage('RECORDING', '');
-    const matchedTarget = targets.find((t) => t.connectUrl === cachedTargetUrl);
+    const cachedRecordingName = getFromLocalStorage('RECORDING', '');
+    const matchedRecording = recordings.find((t) => t.name === cachedRecordingName);
 
-    if (matchedTarget) {
-      context.target.setTarget(matchedTarget);
+    if (matchedRecording) {
+      context.target.setRecording(matchedRecording);
     } else {
-      context.target.setTarget(undefined);
+      context.target.setRecording(undefined);
       removeFromLocalStorage('RECORDING');
     }
-    setFavorites((old) => old.filter((f) => targets.some((t) => t.connectUrl === f)));
-  }, [targets, context.target, setFavorites]);
+    setFavorites((old) => old.filter((f) => recordings.some((r) => r.name === f)));
+  }, [recordings, context.target, setFavorites]);
 
   const refreshTargetList = React.useCallback(() => {
     setLoading(true);
@@ -130,8 +124,8 @@ export const RecordingContextSelector: React.FC<RecordingContextSelectorProps> =
 
   const selectOptions = React.useMemo(() => {
     const matchExp = new RegExp(_.escapeRegExp(searchTerm), 'i');
-    const filteredTargets = targets.filter((t) =>
-      [t.alias, t.connectUrl, getAnnotation(t.annotations.cryostat, 'REALM') ?? ''].some((v) => matchExp.test(v)),
+    const filteredTargets = recordings.filter((t) =>
+      [t.name ?? ''].some((v) => matchExp.test(v)),
     );
 
     if (filteredTargets.length === 0) {
@@ -142,38 +136,29 @@ export const RecordingContextSelector: React.FC<RecordingContextSelectorProps> =
       ];
     }
 
-    const groupNames = new Set<string>();
-    filteredTargets.forEach((t) => groupNames.add(getAnnotation(t.annotations.cryostat, 'REALM') || 'Others'));
-
-    const options = Array.from(groupNames)
-      .map((name) => (
-        <DropdownGroup key={name} label={name}>
-          {filteredTargets
-            .filter((t) => getAnnotation(t.annotations.cryostat, 'REALM') === name)
-            .map((t: Target) => (
+    const options = recordings
+            .map((t: ArchivedRecording) => (
               <DropdownItem
-                isFavorited={favorites.includes(t.connectUrl)}
+                isFavorited={favorites.includes(t.name)}
                 itemId={t}
-                key={t.connectUrl}
-                description={`Target ${t.alias} from ${t.connectUrl}`}
+                key={t.name}
+                description={`Recording ${t.name} from ${t.jvmId}`}
               >
-                {t.alias}
+                {t.name}
               </DropdownItem>
-            ))}
-        </DropdownGroup>
-      ))
+            ))
       .sort((a, b) => `${a.props['label']}`.localeCompare(`${b.props['label']}`));
-
+    console.warn('options', options);
     const favGroup =
       !searchTerm && favorites.length
         ? [
             <DropdownGroup key={'Favorites'} label={'Favorites'}>
               {favorites
-                .map((f) => targets.find((t) => t.connectUrl === f))
+                .map((f) => recordings.find((t) => t.name === f))
                 .filter((t) => t !== undefined)
-                .map((t: Target) => (
-                  <DropdownItem isFavorited itemId={t} key={`favorited-${t.connectUrl}`} description={t.connectUrl}>
-                    {t.alias}
+                .map((t: ArchivedRecording) => (
+                  <DropdownItem isFavorited itemId={t} key={`favorited-${t.name}`} description={t.name}>
+                    {t.name}
                   </DropdownItem>
                 ))}
             </DropdownGroup>,
@@ -181,23 +166,8 @@ export const RecordingContextSelector: React.FC<RecordingContextSelectorProps> =
           ]
         : [];
 
-    return favGroup.concat(options);
-  }, [targets, favorites, searchTerm, t]);
-
-  const onFavoriteClick = React.useCallback(
-    (_, item: Target, actionId: string) => {
-      if (!actionId) {
-        return;
-      }
-      setFavorites((old) => {
-        const prevFav = old.includes(item.connectUrl);
-        const toUpdate = prevFav ? old.filter((f) => f !== item.connectUrl) : [...old, item.connectUrl];
-        saveToLocalStorage('RECORDING_FAVORITES', toUpdate);
-        return toUpdate;
-      });
-    },
-    [setFavorites],
-  );
+    return options;
+  }, [recordings, favorites, searchTerm, t]);
 
   const onClearSelection = React.useCallback(() => {
     setIsRecordingOpen(false);
@@ -245,7 +215,7 @@ export const RecordingContextSelector: React.FC<RecordingContextSelectorProps> =
             onOpenChange={setIsRecordingOpen}
             onOpenChangeKeys={['Escape']}
             onSelect={onSelect}
-            onActionClick={onFavoriteClick}
+            // onActionClick={onFavoriteClick}
             toggle={(toggleRef) => (
               <MenuToggle
                 aria-label={'Select a Recording'}
@@ -257,7 +227,7 @@ export const RecordingContextSelector: React.FC<RecordingContextSelectorProps> =
               >
                 {!selectedRecording
                   ? 'Select a Recording'
-                  : getTargetRepresentation(selectedRecording)}
+                  : selectedRecording.name }
               </MenuToggle>
             )}
             popperProps={{

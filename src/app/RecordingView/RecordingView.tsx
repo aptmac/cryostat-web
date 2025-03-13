@@ -37,9 +37,9 @@ export const RecordingView: React.FC<RecordingViewProps> = ({ attachments, pageT
   React.useEffect(() => {
     addSubscription(
       context.target
-        .target()
+        .recording()
         .pipe(
-          map((target) => !!target),
+          map((recording) => !!recording),
           distinctUntilChanged(),
         )
         .subscribe(setHasSelection),

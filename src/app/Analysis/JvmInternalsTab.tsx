@@ -15,34 +15,34 @@
  */
 import * as React from 'react';
 import '@app/app.css';
-import { Card, CardBody, Grid, GridItem, Stack, StackItem, Text, TextContent, TextList, TextListItem, TextListItemVariants, TextListVariants, TextVariants } from '@patternfly/react-core';
-import { Caption, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import { Card, CardBody, Grid, GridItem, Spinner, Stack, StackItem, Text, TextContent, TextList, TextListItem, TextListItemVariants, TextListVariants, TextVariants } from '@patternfly/react-core';
+import { ServiceContext } from '@app/Shared/Services/Services';
+import { AnalysisPage } from './Analysis';
 
-const columnNames = {
-  name: 'Name',
-  value: 'Value',
-  origin: 'Origin'
-}
+const JvmInternalsTab = () => {
+  const context = React.useContext(ServiceContext);
+  const [events, setEvents] = React.useState('');
 
-const dummyFlagData = [
-  { name: 'ActiveProcessorCount', value: '-1', origin: 'Default' },
-  { name: 'AdaptiveSizeDecrementScaleFactor', value: '4', origin:	'Default' },
-  { name: 'AdaptiveSizeMajorGCDecayTimeScale', value: '10', origin:	'	Default' },
-  { name: 'AdaptiveSizePolicyCollectionCostMargin', value: '50', origin:	'	Default' },
-  { name: 'AdaptiveSizePolicyGCTimeLimitThreshold', value: '5', origin:	'	Default' },
-  { name: 'AdaptiveSizePolicyInitializingSteps', value: '20', origin:	'	Default' },
-  { name: 'AdaptiveSizePolicyOutputInterval', value: '0', origin:	'	Default' },
-  { name: 'AdaptiveSizePolicyReadyThreshold', value: '5', origin:	'	Default' },
-  { name: 'AdaptiveSizePolicyWeight', value: '10', origin:	'	Default' },
-  { name: 'AdaptiveSizeThroughPutPolicy', value: '0',	origin: 'Default' },
-  { name: 'AdaptiveTimeWeight', value: '25', origin:	'Default' },
-  { name: 'AggressiveHeap', value: 'false', origin:	'Default' }
-];
+  React.useEffect(() => {
+    context.target.target().subscribe(target => {
+      context.target.recording().subscribe(recording => {
+        context.api.getEventsForRecording(target?.jvmId || '', recording?.name || '', AnalysisPage.JVM_INTERNALS).subscribe(events => {
+          setEvents(events);
+          console.warn(events);
+        })
+      })
+    })
+  }, []);
 
-export default function JvmInternalsTab() {
+  if (!events) {
+    return(
+      <Spinner></Spinner>
+    )
+  }
+
   return (
     <Grid hasGutter>
-      <GridItem span={6}>
+      <GridItem span={12}>
         <Card>
           <CardBody>
             <Stack hasGutter>
@@ -57,60 +57,23 @@ export default function JvmInternalsTab() {
                 <TextContent>
                   <TextList component={TextListVariants.dl}>
                     <TextListItem component={TextListItemVariants.dt}>JVM Start Time</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>4/15/19, 12:15:39.317 PM</TextListItem>
+                    <TextListItem component={TextListItemVariants.dd}>{events['JVM_INTERNALS']['JVM_START_TIME']}</TextListItem>
                     <TextListItem component={TextListItemVariants.dt}>JVM Name</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>OpenJDK 64-Bit Server VM</TextListItem>
+                    <TextListItem component={TextListItemVariants.dd}>{events['JVM_INTERNALS']['JVM_NAME']}</TextListItem>
                     <TextListItem component={TextListItemVariants.dt}>JVM PID</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>N/A</TextListItem>
+                    <TextListItem component={TextListItemVariants.dd}>{events['JVM_INTERNALS']['PID']}</TextListItem>
                     <TextListItem component={TextListItemVariants.dt}>JVM Version</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>OpenJDK 64-Bit Server VM (11.0.1+13) for linux-amd64 JRE (11.0.1+13), built on Nov  1 2018 12:02:30 by "mockbuild" with gcc 7.3.1 20180712 (Red Hat 7.3.1-6)</TextListItem>
+                    <TextListItem component={TextListItemVariants.dd}>{events['JVM_INTERNALS']['JVM_VERSION']}</TextListItem>
                     <TextListItem component={TextListItemVariants.dt}>JVM Arguments</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>N/A</TextListItem>
+                    <TextListItem component={TextListItemVariants.dd}>{events['JVM_INTERNALS']['JVM_ARGUMENTS']}</TextListItem>
                     <TextListItem component={TextListItemVariants.dt}>JVM Application Arguments</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>DuplicateThreadNames</TextListItem>
+                    <TextListItem component={TextListItemVariants.dd}>{events['JVM_INTERNALS']['JAVA_ARGUMENTS']}</TextListItem>
                     <TextListItem component={TextListItemVariants.dt}>Shutdown Time</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>N/A</TextListItem>
+                    <TextListItem component={TextListItemVariants.dd}>{events['JVM_INTERNALS']['JVM_SHUTDOWN_TIME'] || 'N/A'}</TextListItem>
                     <TextListItem component={TextListItemVariants.dt}>Shutdown Reason</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>N/A</TextListItem>
+                    <TextListItem component={TextListItemVariants.dd}>{events['JVM_INTERNALS']['JVM_SHUTDOWN_REASON'] || 'N/A'}</TextListItem>
                   </TextList>
                 </TextContent>
-              </StackItem>
-            </Stack>
-          </CardBody>
-        </Card>
-      </GridItem>
-      <GridItem span={6}>
-        <Card>
-        <CardBody>
-            <Stack hasGutter>
-            <StackItem>
-                <TextContent>
-                  <Text component={TextVariants.h1}>
-                    JVM Flags
-                  </Text>
-                </TextContent>
-              </StackItem>
-              <StackItem isFilled>
-                <Table
-                  aria-label="Simple table"
-                >
-                  <Thead>
-                    <Tr>
-                      <Th>{columnNames.name}</Th>
-                      <Th>{columnNames.value}</Th>
-                      <Th>{columnNames.origin}</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {dummyFlagData.map((repo) => (
-                      <Tr key={repo.name}>
-                        <Td dataLabel={columnNames.name}>{repo.name}</Td>
-                        <Td dataLabel={columnNames.value}>{repo.value}</Td>
-                        <Td dataLabel={columnNames.origin}>{repo.origin}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
               </StackItem>
             </Stack>
           </CardBody>
@@ -119,3 +82,5 @@ export default function JvmInternalsTab() {
     </Grid>
   );
 }
+
+export default JvmInternalsTab;

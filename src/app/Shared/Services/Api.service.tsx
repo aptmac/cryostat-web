@@ -80,6 +80,7 @@ import {
 import { NotificationService } from './Notifications.service';
 import { CryostatContext } from './Services';
 import { TargetService } from './Target.service';
+import { AnalysisPage } from '@app/Analysis/Analysis';
 
 export class ApiService {
   private readonly archiveEnabled = new BehaviorSubject<boolean>(true);
@@ -817,6 +818,23 @@ export class ApiService {
     );
   }
 
+  getEventsForRecording(jvmId: string, recordingName: string, page: AnalysisPage): Observable<string> {
+    if (!jvmId || !recordingName) {
+      return of('');
+    }
+    return this.sendRequest(
+      'beta',
+      `analysis/${jvmId}/${recordingName}/${page}`,
+      {
+        method: 'GET',
+      }
+    ).pipe(
+      concatMap((resp) => {
+        return resp.json();
+      })
+    )
+  }
+
   graphql<T>(
     query: string,
     variables?: unknown,
@@ -1406,10 +1424,10 @@ export class ApiService {
     );
   }
 
-  getArchivedRecordings() {
+  getArchivedRecordings(): Observable<ArchivedRecording[]> {
     return this.getTargets().pipe(
       concatMap(targets => targets),
-      switchMap(target => 
+      switchMap(target =>
         this.getTargetArchivedRecordings(target)
       )
     );

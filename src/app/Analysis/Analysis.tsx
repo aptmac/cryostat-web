@@ -21,7 +21,6 @@ import { getActiveTab, switchTab } from '@app/utils/utils';
 import { Card, CardBody, CardTitle, Tab, Tabs, TabTitleText } from '@patternfly/react-core';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
-import FlamegraphTab from './FlamegraphTab';
 import JMCTab from './JMCTab';
 import EventBrowserTab from './EventBrowserTab';
 import EnvironmentTab from './EnvironmentTab';
@@ -34,8 +33,13 @@ enum AnalysisTab {
   JVM_INTERNALS = 'jfr-jvm-internals',
   ENVIRONMENT = 'jfr-environment',
   GC_INFO = 'jfr-garbage-collection',
-  FLAMEGRAPH = 'jfr-flamegraph',
   JMC = 'jfr-jmc'
+}
+
+export enum AnalysisPage {
+  JVM_INTERNALS = 'jvm-internals',
+  ENVIRONMENT = 'environment',
+  GC = 'gc',
 }
 
 export interface AnalysisProps {}
@@ -61,8 +65,6 @@ export const Analysis: React.FC<AnalysisProps> = ({ ...props }) => {
       switchTab(navigate, pathname, search, { tabKey: 'tab', tabValue: `${key}` }),
     [navigate, pathname, search],
   );
-
-  const targetAsObs = React.useMemo(() => context.target.target(), [context.target]);
 
   const cardBody = React.useMemo(() => {
     return archiveEnabled ? (
@@ -96,13 +98,6 @@ export const Analysis: React.FC<AnalysisProps> = ({ ...props }) => {
             <EnvironmentTab></EnvironmentTab>
         </Tab>
         <Tab
-          id="jfr-flamegraph"
-          eventKey={AnalysisTab.FLAMEGRAPH}
-          title={<TabTitleText>Flamegraph</TabTitleText>}
-        >
-          <FlamegraphTab></FlamegraphTab>
-        </Tab>
-        <Tab
           id="jfr-event-browser"
           eventKey={AnalysisTab.EVENT_BROWSER}
           title={<TabTitleText>Event Browser</TabTitleText>}
@@ -111,7 +106,6 @@ export const Analysis: React.FC<AnalysisProps> = ({ ...props }) => {
         </Tab>
         <Tab
           id="jfr-jmc"
-          isDisabled
           eventKey={AnalysisTab.JMC}
           title={<TabTitleText>JDK Mission Control</TabTitleText>}
         >
@@ -123,7 +117,7 @@ export const Analysis: React.FC<AnalysisProps> = ({ ...props }) => {
         <CardTitle>Active Analysis</CardTitle>
       </>
     );
-  }, [archiveEnabled, activeTab, onTabSelect, targetAsObs]);
+  }, [archiveEnabled, activeTab, onTabSelect]);
 
   return (
     <RecordingView {...props} pageTitle="JFR Analysis">
