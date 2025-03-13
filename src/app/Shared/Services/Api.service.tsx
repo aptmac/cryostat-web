@@ -66,6 +66,7 @@ import {
   isTargetMetadata,
   MBeanMetricsResponse,
   BuildInfo,
+  NullableRecording,
 } from './api.types';
 import {
   isHttpError,
@@ -876,7 +877,10 @@ export class ApiService {
     return req();
   }
 
-  sendRecordingToJmc(recording: Recording): void {
+  sendRecordingToJmc(recording: Recording | NullableRecording): void {
+    if (!recording) {
+      return;
+    }
     console.warn(recording.downloadUrl);
     let apiPath = recording.downloadUrl.split('v4/')
     this.sendRequest('v4', apiPath[1], {
