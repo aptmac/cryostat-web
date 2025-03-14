@@ -23,10 +23,8 @@ const JMCTab = () => {
   const context = React.useContext(ServiceContext);
   const [recording, setRecording] = React.useState<NullableRecording>(undefined);
     React.useEffect(() => {
-      context.target.target().subscribe(target => {
-        context.target.recording().subscribe(recording => {
-            setRecording(recording);
-          })
+      context.target.recording().subscribe(recording => {
+        setRecording(recording);
       })
     }, []);
 

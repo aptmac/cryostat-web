@@ -18,18 +18,25 @@ import '@app/app.css';
 import { Card, CardBody, Grid, GridItem, Spinner, Stack, StackItem, Text, TextContent, TextList, TextListItem, TextListItemVariants, TextListVariants, TextVariants } from '@patternfly/react-core';
 import { ServiceContext } from '@app/Shared/Services/Services';
 import { AnalysisPage } from './Analysis';
+import { dashboardConfigTemplateHistoryClearIntent } from '@app/Shared/Redux/Configurations/DashboardConfigSlice';
 
 const GarbageCollectorTab = () => {
   const context = React.useContext(ServiceContext);
   const [events, setEvents] = React.useState('');
 
   React.useEffect(() => {
-    context.target.target().subscribe(target => {
-      context.target.recording().subscribe(recording => {
-        context.api.getEventsForRecording(target?.jvmId || '', recording?.name || '', AnalysisPage.GC).subscribe(events => {
-          setEvents(events);
-          console.warn(events);
-        })
+    context.target.recording().subscribe(recording => {
+      var jvmId = '';
+      if (!recording?.metadata.labels) {
+        return;
+      }
+      for (const label of recording?.metadata.labels){
+        if (label.key === 'jvmId') {
+          jvmId = label.value;
+        }
+      }
+      context.api.getEventsForRecording(jvmId, recording.name, AnalysisPage.GC).subscribe(events => {
+        setEvents(events);
       })
     })
   }, []);

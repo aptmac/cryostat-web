@@ -2,6 +2,7 @@ const path = require('path');
 module.exports = {
   stylePaths: [
     path.resolve(__dirname, 'src'),
+    path.resolve(__dirname, 'node_modules/d3-flame-graph/dist/d3-flamegraph.css'),
     path.resolve(__dirname, 'node_modules/patternfly'),
     path.resolve(__dirname, 'node_modules/@patternfly/patternfly'),
     path.resolve(__dirname, 'node_modules/@patternfly/react-styles/css'),

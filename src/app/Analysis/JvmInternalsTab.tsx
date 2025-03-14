@@ -24,12 +24,18 @@ const JvmInternalsTab = () => {
   const [events, setEvents] = React.useState('');
 
   React.useEffect(() => {
-    context.target.target().subscribe(target => {
-      context.target.recording().subscribe(recording => {
-        context.api.getEventsForRecording(target?.jvmId || '', recording?.name || '', AnalysisPage.JVM_INTERNALS).subscribe(events => {
-          setEvents(events);
-          console.warn(events);
-        })
+    context.target.recording().subscribe(recording => {
+      var jvmId = '';
+      if (!recording?.metadata.labels) {
+        return;
+      }
+      for (const label of recording?.metadata.labels){
+        if (label.key === 'jvmId') {
+          jvmId = label.value;
+        }
+      }
+      context.api.getEventsForRecording(jvmId, recording.name, AnalysisPage.JVM_INTERNALS).subscribe(events => {
+        setEvents(events);
       })
     })
   }, []);

@@ -22,14 +22,15 @@ import { Card, CardBody, CardTitle, Tab, Tabs, TabTitleText } from '@patternfly/
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import JMCTab from './JMCTab';
-import EventBrowserTab from './EventBrowserTab';
+import EventBrowserTab from './FlamegraphTab';
 import EnvironmentTab from './EnvironmentTab';
 import GarbageCollectorTab from './GarbageCollectorTab';
 import JvmInternalsTab from './JvmInternalsTab';
+import FlamegraphTab from './FlamegraphTab';
 
 enum AnalysisTab {
   AUTOMATED_ANALYSIS = 'jfr-automated-analysis',
-  EVENT_BROWSER = 'jfr-event-browser',
+  FLAMEGRAPH = 'jfr-flamegraph',
   JVM_INTERNALS = 'jfr-jvm-internals',
   ENVIRONMENT = 'jfr-environment',
   GC_INFO = 'jfr-garbage-collection',
@@ -39,6 +40,7 @@ enum AnalysisTab {
 export enum AnalysisPage {
   JVM_INTERNALS = 'jvm-internals',
   ENVIRONMENT = 'environment',
+  FLAMEGRAPH = 'flamegraph',
   GC = 'gc',
 }
 
@@ -98,11 +100,11 @@ export const Analysis: React.FC<AnalysisProps> = ({ ...props }) => {
             <EnvironmentTab></EnvironmentTab>
         </Tab>
         <Tab
-          id="jfr-event-browser"
-          eventKey={AnalysisTab.EVENT_BROWSER}
-          title={<TabTitleText>Event Browser</TabTitleText>}
+          id="jfr-flamegraph"
+          eventKey={AnalysisTab.FLAMEGRAPH}
+          title={<TabTitleText>Flamegraph</TabTitleText>}
         >
-          <EventBrowserTab></EventBrowserTab>
+          <FlamegraphTab></FlamegraphTab>
         </Tab>
         <Tab
           id="jfr-jmc"

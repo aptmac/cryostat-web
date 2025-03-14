@@ -148,7 +148,6 @@ export const RecordingContextSelector: React.FC<RecordingContextSelectorProps> =
               </DropdownItem>
             ))
       .sort((a, b) => `${a.props['label']}`.localeCompare(`${b.props['label']}`));
-    console.warn('options', options);
     const favGroup =
       !searchTerm && favorites.length
         ? [
