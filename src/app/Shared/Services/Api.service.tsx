@@ -81,6 +81,7 @@ import {
 import { NotificationService } from './Notifications.service';
 import { CryostatContext } from './Services';
 import { TargetService } from './Target.service';
+import { SettingsService } from './Settings.service';
 
 export class ApiService {
   private readonly archiveEnabled = new BehaviorSubject<boolean>(true);
@@ -93,6 +94,7 @@ export class ApiService {
     private readonly ctx: CryostatContext,
     private readonly target: TargetService,
     private readonly notifications: NotificationService,
+    private readonly settings: SettingsService,
   ) {}
 
   testBaseServer() {
@@ -931,6 +933,32 @@ export class ApiService {
           first(),
         );
     return req();
+  }
+
+  sendRecordingToJmc(recording: Recording): void {
+    const apiPath = recording.downloadUrl.split('v4/');
+    this.sendRequest('v4', apiPath[1], {
+      method: 'GET',
+    }).subscribe((resp) => {
+      resp.blob().then((blob) => {
+        const connection = new WebSocket(`ws://localhost:${this.settings.jmcPluginPort()}/cryostat/`);
+        connection.onopen = () => {
+          connection.send(recording.name);
+          this.notifications.success(
+            `View in JDK Mission Control: ${recording.name}`,
+            `Sending recording (${recording.name}) to JDK Mission Control`,
+          );
+          connection.send(blob);
+          connection.close();
+        };
+        connection.onerror = () => {
+          this.notifications.warning(
+            'Warning: Unable to view in JDK Mission Control',
+            `Ensure that you have a running JDK Mission Control application with the Cryostat Plugin running on port ${this.settings.jmcPluginPort()}`,
+          );
+        };
+      });
+    });
   }
 
   downloadRecording(recording: Recording): void {

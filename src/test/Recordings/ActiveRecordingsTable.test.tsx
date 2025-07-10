@@ -36,6 +36,7 @@ import dayjs, { defaultDatetimeFormat } from '@i18n/datetime';
 import { act, cleanup, screen, within } from '@testing-library/react';
 import { of, Subject } from 'rxjs';
 import { basePreloadedState, DEFAULT_DIMENSIONS, render, resize, testT } from '../utils';
+import { FeatureLevel } from '@app/Shared/Services/service.types';
 
 const mockConnectUrl = 'service:jmx:rmi://someUrl';
 const mockJvmId = 'id';
@@ -118,6 +119,7 @@ jest
   .mockReturnValue(true);
 
 jest.spyOn(defaultServices.settings, 'datetimeFormat').mockReturnValue(of(defaultDatetimeFormat));
+jest.spyOn(defaultServices.settings, 'featureLevel').mockReturnValue(of(FeatureLevel.PRODUCTION));
 
 jest
   .spyOn(defaultServices.notificationChannel, 'messages')
@@ -509,6 +511,47 @@ describe('<ActiveRecordingsTable />', () => {
 
     expect(downloadRequestSpy).toHaveBeenCalledTimes(1);
     expect(downloadRequestSpy).toBeCalledWith(mockRecording);
+  });
+
+  it('should send a recording to JMC when View in JDK Mission Control is clicked', async () => {
+    jest.spyOn(defaultServices.settings, 'featureLevel').mockReturnValue(of(FeatureLevel.DEVELOPMENT));
+    jest.spyOn(defaultServices.settings, 'jmcPluginEnabled').mockReturnValue(true);
+    const { user } = render({
+      routerConfigs: {
+        routes: [
+          {
+            path: '/recordings',
+            element: <ActiveRecordingsTable archiveEnabled={true} />,
+          },
+        ],
+      },
+      preloadedState: preloadedState,
+    });
+    await act(async () => {
+      await user.click(screen.getByLabelText(testT('RecordingActions.ARIA_LABELS.MENU_TOGGLE')));
+      await user.click(screen.getByText('View in JDK Mission Control ...'));
+    });
+    const jmcRequestSpy = jest.spyOn(defaultServices.api, 'sendRecordingToJmc');
+    expect(jmcRequestSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not display the JMC recording action outside of the Development feature level', async () => {
+    jest.spyOn(defaultServices.settings, 'featureLevel').mockReturnValue(of(FeatureLevel.BETA));
+    jest.spyOn(defaultServices.settings, 'jmcPluginEnabled').mockReturnValue(true);
+    const { user } = render({
+      routerConfigs: {
+        routes: [
+          {
+            path: '/recordings',
+            element: <ActiveRecordingsTable archiveEnabled={true} />,
+          },
+        ],
+      },
+      preloadedState: preloadedState,
+    });
+    user.click(screen.getByLabelText(testT('RecordingActions.ARIA_LABELS.MENU_TOGGLE')));
+    const jmcAction = screen.queryByText('View in JDK Mission Control ...');
+    expect(jmcAction).not.toBeInTheDocument();
   });
 
   it('uploads a Recording to Grafana when View in Grafana is clicked', async () => {

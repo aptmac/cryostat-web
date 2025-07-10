@@ -600,6 +600,11 @@
       "PRODUCTION_DESCRIPTION": "Stable production-ready features",
       "TITLE": "Feature level"
     },
+    "JMC_PLUGIN": {
+      "CHECKBOX_LABEL": "Enabled",
+      "DESCRIPTION": "Set the WebSocket port to be used by Cryostat to send Flight Recorder data to JDK Mission Control. Installation of the Cryostat Plugin for JDK Mission Control is required.",
+      "TITLE": "Transferring Flight Recorder data to JDK Mission Control"
+    },
     "LANGUAGE": {
       "ARIA_LABELS": {
         "MENU_TOGGLE": "language-setting-toggle",
