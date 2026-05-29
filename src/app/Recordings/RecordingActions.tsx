@@ -17,6 +17,7 @@ import { modalPrefillSetIntent, store } from '@app/Shared/Redux/ReduxStore';
 import { NotificationCategory, Recording, Target } from '@app/Shared/Services/api.types';
 import { CapabilitiesContext } from '@app/Shared/Services/Capabilities';
 import { NotificationsContext } from '@app/Shared/Services/Notifications.service';
+import { FeatureLevel } from '@app/Shared/Services/service.types';
 import { ServiceContext } from '@app/Shared/Services/Services';
 import { useSubscriptions } from '@app/utils/hooks/useSubscriptions';
 import { toPath } from '@app/utils/utils';
@@ -52,6 +53,7 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
   const notifications = React.useContext(NotificationsContext);
   const navigate = useNavigate();
   const [grafanaEnabled, setGrafanaEnabled] = React.useState(false);
+  const [jmcEnabled, setJmcEnabled] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
   const addSubscription = useSubscriptions();
@@ -68,7 +70,16 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
           .subscribe(() => setGrafanaEnabled(true)),
       );
     }
-  }, [capabilities, context.api, setGrafanaEnabled, addSubscription]);
+    addSubscription(
+      context.settings.featureLevel().subscribe((featureLevel) => {
+        if (featureLevel != FeatureLevel.DEVELOPMENT) {
+          setJmcEnabled(false);
+        } else {
+          setJmcEnabled(context.settings.jmcPluginEnabled());
+        }
+      }),
+    );
+  }, [capabilities, context.api, setJmcEnabled, setGrafanaEnabled, addSubscription]);
 
   const grafanaUpload = React.useCallback(() => {
     addSubscription(
@@ -101,6 +112,14 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
     },
     [recording, navigate],
   );
+  const handleJmcUpload = React.useCallback(() => {
+    // Get the current target to include application name
+    addSubscription(
+      context.target.target().pipe(first()).subscribe((target) => {
+        context.api.sendRecordingToJmc(recording, target);
+      })
+    );
+  }, [context.api, context.target, recording, addSubscription]);
 
   const actionItems = React.useMemo(() => {
     const actionItems = [
@@ -110,6 +129,13 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
         onClick: handleDownloadRecording,
       },
     ] as RowAction[];
+    if (jmcEnabled) {
+      actionItems.push({
+        title: 'View in JDK Mission Control ...',
+        key: 'view-in-jmc',
+        onClick: handleJmcUpload,
+      });
+    }
     if (grafanaEnabled) {
       actionItems.push({
         title: t('RecordingActions.VIEW_IN_GRAFANA'),
@@ -128,7 +154,8 @@ export const RecordingActions: React.FC<RecordingActionsProps> = ({ recording, u
     }
 
     return actionItems;
-  }, [t, handleDownloadRecording, grafanaEnabled, grafanaUpload, directory, recording, handleViewInAnalytics]);
+  }, [t, handleDownloadRecording, grafanaEnabled, grafanaUpload, directory, recording, handleViewInAnalytics, jmcEnabled, handleJmcUpload]);
+
 
   const onSelect = React.useCallback(
     (action: RowAction) => {

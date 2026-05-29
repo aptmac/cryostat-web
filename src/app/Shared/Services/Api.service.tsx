@@ -91,6 +91,7 @@ import {
 import { NotificationService } from './Notifications.service';
 import { CryostatContext } from './Services';
 import { TargetService } from './Target.service';
+import { SettingsService } from './Settings.service';
 
 export class ApiService {
   private readonly archiveEnabled = new BehaviorSubject<boolean>(true);
@@ -103,6 +104,7 @@ export class ApiService {
     private readonly ctx: CryostatContext,
     private readonly target: TargetService,
     private readonly notifications: NotificationService,
+    private readonly settings: SettingsService,
   ) {}
 
   testBaseServer() {
@@ -1208,6 +1210,88 @@ export class ApiService {
           first(),
         );
     return req();
+  }
+
+  sendRecordingToJmc(recording: Recording, target?: Target): void {
+    // Extract the recording ID from the download URL
+    // Format: /api/v4/activedownload/{id} or /api/v4/download/{encodedKey}
+    const urlParts = recording.downloadUrl.split('/');
+    const recordingId = urlParts[urlParts.length - 1];
+    const isArchived = recording.downloadUrl.includes('/download/');
+    
+    // Determine the token endpoint based on recording type
+    const tokenEndpoint = isArchived
+      ? `recordings/${recordingId}/token`
+      : `activedownload/${recordingId}/token`;
+    
+    // Request a download token from the backend using REST
+    this.sendRequest('v4', tokenEndpoint, {
+      method: 'POST',
+    }).pipe(
+      concatMap(response => response.json()),
+      concatMap((tokenData: { token: string; downloadUrl: string; expiresAt: number }) => {
+        // Determine the backend URL for the absolute URL
+        const isDevelopment = window.location.port === '9000';
+        const backendUrl = isDevelopment ? 'https://localhost:8443' : window.location.origin;
+        
+        // Construct absolute URL with token
+        const absoluteUrl = new URL(tokenData.downloadUrl, backendUrl).href;
+        
+        return new Observable<void>((observer) => {
+          const connection = new WebSocket(`ws://localhost:${this.settings.jmcPluginPort()}/download`);
+          
+          connection.onopen = () => {
+            // Get application name and sanitize it
+            const appName = target?.alias || target?.connectUrl || 'unknown';
+            // Replace file extensions (.jar, .war, etc.) with hyphens
+            const sanitizedAppName = appName.replace(/\.(jar|war|ear|zip)$/i, '');
+            
+            // Create combined recording name: applicationName-recordingName
+            const combinedRecordingName = `${sanitizedAppName}-${recording.name}`;
+            
+            // Send simplified JSON with just recordingName and downloadUrl
+            const message = JSON.stringify({
+              recordingName: combinedRecordingName,
+              downloadUrl: absoluteUrl,
+            });
+          
+            connection.send(message);
+            
+            this.notifications.success(
+              'View in JDK Mission Control',
+              `Sent recording "${recording.name}" to JDK Mission Control`,
+            );
+            
+            connection.close();
+            observer.next();
+            observer.complete();
+          };
+          
+          connection.onerror = (error) => {
+            console.error('WebSocket error connecting to JMC plugin:', error);
+            this.notifications.warning(
+              'Unable to Connect to JDK Mission Control',
+              `Ensure that JDK Mission Control is running with the Cryostat Plugin on port ${this.settings.jmcPluginPort()}`,
+            );
+            observer.error(error);
+          };
+          
+          connection.onclose = (event) => {
+            if (!event.wasClean) {
+              console.warn('WebSocket connection closed unexpectedly:', event.code, event.reason);
+            }
+          };
+        });
+      }),
+    ).subscribe({
+      error: (error) => {
+        console.error('Failed to send recording to JMC:', error);
+        this.notifications.danger(
+          'Failed to Send Recording',
+          `Could not generate download token for recording "${recording.name}". ${error.message || ''}`,
+        );
+      },
+    });
   }
 
   downloadRecording(recording: Recording): void {

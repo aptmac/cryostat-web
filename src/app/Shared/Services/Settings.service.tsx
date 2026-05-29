@@ -127,6 +127,22 @@ export class SettingsService {
     saveToLocalStorage('AUTO_REFRESH_UNITS', String(units));
   }
 
+  jmcPluginEnabled(): boolean {
+    return getFromLocalStorage<string>('JMC_PLUGIN_ENABLED', 'false') === 'true';
+  }
+
+  setJmcPluginEnabled(enabled: boolean): void {
+    saveToLocalStorage('JMC_PLUGIN_ENABLED', String(enabled));
+  }
+
+  jmcPluginPort(defaultPort = 8029): number {
+    return Number(getFromLocalStorage('JMC_PLUGIN_PORT', defaultPort));
+  }
+
+  setJmcPluginPort(port: number): void {
+    saveToLocalStorage('JMC_PLUGIN_PORT', String(port));
+  }
+
   automatedAnalysisRecordingConfig(
     defaultConfig = defaultAutomatedAnalysisRecordingConfig,
   ): AutomatedAnalysisRecordingConfig {

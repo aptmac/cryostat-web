@@ -48,6 +48,7 @@ import { ChartCards } from './Config/ChartCards';
 import { DatetimeControl } from './Config/DatetimeControl';
 import { DeletionDialogControl } from './Config/DeletionDialogControl';
 import { FeatureLevels } from './Config/FeatureLevels';
+import { JmcPluginControl } from './Config/JmcPluginControl';
 import { Language } from './Config/Language';
 import { NotificationControl } from './Config/NotificationControl';
 import { Theme } from './Config/Theme';
@@ -76,6 +77,7 @@ export const Settings: React.FC<SettingsProps> = (_) => {
         DeletionDialogControl,
         WebSocketDebounce,
         AutoRefresh,
+        JmcPluginControl,
         FeatureLevels,
         Language,
         DatetimeControl,
